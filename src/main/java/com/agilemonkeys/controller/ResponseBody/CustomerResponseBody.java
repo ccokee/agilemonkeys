@@ -1,16 +1,14 @@
-package com.agilemonkeys.domain;
+package com.agilemonkeys.controller.ResponseBody;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
-public class Customer {
+public class CustomerResponseBody {
     String id;
     String name;
     String surname;
-    MultipartFile photo;
     String photoUrl;
     String createdBy;
     String lastModifiedBy;
