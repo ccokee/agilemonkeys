@@ -10,13 +10,19 @@ import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Integration tests for {@link GoogleCloudStorage} implementation of {@link FileStorageRepository}.
+ */
 public class GoogleCloudStorageIntegrationTest {
+
+    private static final String projectId = "agile-monkeys-test";
+    private static final String bucketName = "crm-photos";
 
     private GoogleCloudStorage repository;
 
     @Before
     public void setUp() throws Exception {
-        repository = new GoogleCloudStorage("agile-monkeys-test", "crm-photos");
+        repository = new GoogleCloudStorage(projectId, bucketName);
     }
 
     @Test
