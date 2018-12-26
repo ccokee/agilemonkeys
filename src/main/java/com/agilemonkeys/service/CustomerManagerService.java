@@ -1,8 +1,8 @@
 package com.agilemonkeys.service;
 
 import com.agilemonkeys.controller.RequestBody.CustomerRequestBody;
-import com.agilemonkeys.controller.ResponseBody.CustomerResponseBody;
 import com.agilemonkeys.domain.Customer;
+import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class CustomerManagerService {
@@ -31,26 +31,33 @@ public class CustomerManagerService {
         Customer customer = Customer.builder()
                 .name(customerRequestBody.getName())
                 .surname(customerRequestBody.getSurname())
-                .photo(profilePicture)
                 .email(customerRequestBody.getEmail())
                 .build();
         customerRepository.addCustomer(customer);
     }
 
-    public List<CustomerResponseBody> getCustomers() {
+    public List<Customer> getCustomers() {
         log.info("Service retrieving all customers.");
-        return customerRepository.getCustomers()
-                .stream()
-                .map(customer ->
-                        CustomerResponseBody.builder()
-                                .id(customer.getId())
-                                .name(customer.getName())
-                                .surname(customer.getSurname())
-                                .photoUrl(customer.getPhotoUrl())
-                                .createdBy(customer.getCreatedBy())
-                                .lastModifiedBy(customer.getLastModifiedBy())
-                                .email(customer.getEmail())
-                                .build())
-                .collect(Collectors.toList());
+        return customerRepository.findAll();
+    }
+
+    public Customer findById(String id) {
+        log.info("Service retrieving Customer {}.", id);
+        Optional<Customer> customer = customerRepository.findById(id);
+
+        if (!customer.isPresent())
+            throw new CustomerNotFoundException("Customer " + id + " not found.");
+
+        return customer.get();
+    }
+
+    public void deleteCustomer(String id) {
+        log.info("Service deleting Customer {}.", id);
+        Optional<Customer> customer = customerRepository.findById(id);
+
+        if (!customer.isPresent())
+            throw new CustomerNotFoundException("Customer " + id + " not found.");
+
+        customerRepository.deleteCustomer(id);
     }
 }

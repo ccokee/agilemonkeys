@@ -35,7 +35,7 @@ public class CustomerManagerControllerTest {
     @Test
     public void getCostumers() throws Exception {
         CustomerResponseBody customerResponseBody = CustomerResponseBody.builder()
-            .id("asd13")
+            .id(13)
             .name("John")
             .surname("Langley")
             .photoUrl("www.test/image.png")
@@ -45,7 +45,6 @@ public class CustomerManagerControllerTest {
             .build();
 
         List<CustomerResponseBody> customerResponseBodies = singletonList(customerResponseBody);
-
         given(customerManagerController.getCostumers()).willReturn(ResponseEntity.ok(customerResponseBodies));
 
         mockMvc.perform(get("/customers")

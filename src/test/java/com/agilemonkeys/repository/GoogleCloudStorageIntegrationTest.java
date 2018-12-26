@@ -10,7 +10,7 @@ import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class GoogleCloudStorageTest {
+public class GoogleCloudStorageIntegrationTest {
 
     private GoogleCloudStorage repository;
 

@@ -1,6 +1,7 @@
-package com.agilemonkeys.repository;
+package com.agilemonkeys.repository.impl;
 
 import com.agilemonkeys.domain.Customer;
+import com.agilemonkeys.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
-import java.util.UUID;
 
 @Repository
 @Qualifier("fakeRepository")
@@ -18,17 +18,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerRepositoryImpl.class);
 
-    private Map<String, Customer> customers = new HashMap<String, Customer>();
+    private Map<Integer, Customer> customers = new HashMap<Integer, Customer>();
 
-    public List<Customer> getCustomers() {
+    public List<Customer> findAll() {
         return new ArrayList<>(customers.values());
     }
 
     public void addCustomer(Customer customer) {
-        String uniqueID = UUID.randomUUID().toString();
-        customer.setId(uniqueID);
+        customer.setId(1);
         customer.setPhotoUrl("gcs://...");
-        customers.put(uniqueID, customer);
+        customers.put(1, customer);
         log.info("Added new Customer {}", customer);
     }
 

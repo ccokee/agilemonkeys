@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CustomerResponseBody {
-    String id;
+    Integer id;
     String name;
     String surname;
     String photoUrl;
