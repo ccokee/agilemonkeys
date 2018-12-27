@@ -1,7 +1,16 @@
 package com.agilemonkeys.domain;
 
-import lombok.*;
-import javax.persistence.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Transient;
+import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -12,8 +21,7 @@ import javax.persistence.*;
 @Table(name = "customers")
 public class Customer {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    Integer id;
+    String id;
 
     @Column(name = "name")
     String name;
@@ -32,4 +40,9 @@ public class Customer {
 
     @Column(name = "email")
     String email;
+
+    // This byte array won't be persisted in the Relational Repo.
+    // It's included in the domain model so it can be persisted in the File Storage Repository.
+    @Transient
+    Optional<Photo> photo;
 }
