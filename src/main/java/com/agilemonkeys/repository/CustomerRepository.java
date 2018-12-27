@@ -1,7 +1,7 @@
 package com.agilemonkeys.repository;
 
 import com.agilemonkeys.domain.Customer;
-import java.util.List;
+import com.agilemonkeys.exception.CustomerRepositoryException;
 import java.util.Optional;
 
 /**
@@ -10,27 +10,38 @@ import java.util.Optional;
 public interface CustomerRepository {
 
     /**
-     * Returns list of all costumers persisted in the repo.
-     * @return List of {@link Customer}.
-     */
-    List<Customer> findAll();
-
-    /**
-     * Add new Customer to Repo.
+     * Add new {@link Customer} to the Repository.
      * @param customer instance of {@link Customer}.
+     * @return The saved {@link Customer} instance.
+     * @throws CustomerRepositoryException upon Failure.
      */
-    void addCustomer(Customer customer);
+    Customer add(Customer customer);
 
     /**
      * Returns {@link Customer} instance given its id.
-     * @return Customer's Unique identifier.
+     * @return {@link Customer} instance if record found, Optional.empty() otherwise.
      */
     Optional<Customer> findById(String id);
 
     /**
+     * Returns List of all costumers persisted in the repository.
+     * @return List of {@link Customer}.
+     */
+    Iterable<Customer> findAll();
+
+    /**
+     * Update existing {@link Customer}.
+     * @param customer instance of {@link Customer}.
+     * @return updated {@link Customer}.
+     * @throws CustomerRepositoryException upon Failure.
+     */
+    Customer update(Customer customer);
+
+    /**
      * Delete {@link Customer} given its id
      * @param id Customer's Unique identifier.
+     * @throws CustomerRepositoryException upon Failure.
      */
-    void deleteCustomer(String id);
+    void delete(String id);
 
 }
