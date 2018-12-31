@@ -26,17 +26,31 @@ public class UserManagerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserManagerService(UserRepository userRepository) {
+    public UserManagerService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Add new {@link User} to the Repository.
+     * @param user instance of {@link User}.
+     * @return The persisted {@link User} instance.
+     */
     public User add(@NonNull User user) {
         log.info("Service received new User {} to be added.", user.toString());
         user.setPassword(passwordEncoder.encode(genereateRandomPassword()));
+
+        // This is where we should send an email to new User with the auto-generated random password so he can reset it.
+
         user.setNew(true);
         return userRepository.save(user);
     }
 
+    /**
+     * Returns {@link User} instance given its username.
+     * @return {@link User} instance.
+     * @throws UserNotFoundException upon Failure.
+     */
     public User findByUsername(@NonNull String username) {
         log.info("Service retrieving User with username {}.", username);
         Optional<User> user = userRepository.findByUsername(username);
@@ -47,25 +61,39 @@ public class UserManagerService {
         return user.get();
     }
 
+    /**
+     * Returns List of all users persisted in the repository.
+     * @return List of {@link User}.
+     */
     public Iterable<User> findAll() {
         log.info("Service retrieving all users.");
         return userRepository.findAll();
     }
 
+    /**
+     * Update existing {@link User}.
+     * @param user instance of {@link User}.
+     * @return updated {@link User}.
+     * @throws UserNotFoundException upon Failure.
+     */
     public User update(@NonNull User user) {
         if(user.getUsername() == null)
             throw new UserNotFoundException("username must be provided in Request.");
 
         log.info("Service updating User {}", user.getUsername());
         user.setNew(false);
+
         return userRepository.save(user);
     }
 
+    /**
+     * Delete {@link User} given its id
+     * @param username User's Unique identifier.
+     * @throws UserNotFoundException upon Failure.
+     */
     public void deleteByUsername(@NonNull String username) {
         log.info("Service deleting User with username {}.", username);
         int numberOfRowDeleted = userRepository.deleteByUsername(username);
-
-        System.out.println(numberOfRowDeleted);
 
         if(numberOfRowDeleted == 0)
             throw new UserNotFoundException("Provided username doesn't exist in DB.");
@@ -89,9 +117,9 @@ public class UserManagerService {
                 .mapToObj(c -> (char) c)
                 .collect(Collectors.toList());
         Collections.shuffle(pwdChars);
-        String password = pwdChars.stream()
+
+        return pwdChars.stream()
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
-        return password;
     }
 }
