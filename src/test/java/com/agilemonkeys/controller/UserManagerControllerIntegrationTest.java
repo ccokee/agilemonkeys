@@ -30,7 +30,7 @@ import static org.hamcrest.core.Is.is;
 @SpringBootTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserManagerControllerTest {
+public class UserManagerControllerIntegrationTest {
 
     private static String username = "user1";
     private static String password = "welcome1";
