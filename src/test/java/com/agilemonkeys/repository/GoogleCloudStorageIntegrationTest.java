@@ -26,27 +26,26 @@ public class GoogleCloudStorageIntegrationTest {
     }
 
     @Test
-    public void uploadFileTest() throws Exception {
+    public void uploadFileTestAndDelete() throws Exception {
         File file = new File(getClass().getClassLoader().getResource("image.png").getFile());
         byte[] fileContent = Files.readAllBytes(file.toPath());
 
         String fileUrl = repository.uploadFile(fileContent, "test.png");
         assertNotNull(fileUrl);
+        repository.deleteFile("test.png");
     }
 
     @Test
-    public void uploadExistingFile() throws Exception {
+    public void uploadExistingFileAndDelete() throws Exception {
         File file = new File(getClass().getClassLoader().getResource("image.png").getFile());
         byte[] fileContent = Files.readAllBytes(file.toPath());
 
         String fileUrl = repository.uploadFile(fileContent, "test.png");
         assertNotNull(fileUrl);
-    }
+        String fileUrl2 = repository.uploadFile(fileContent, "test.png");
+        assertNotNull(fileUrl2);
 
-    @Test
-    public void deleteFileTest() {
-        Boolean deleted = repository.deleteFile("test.png");
-        assertEquals(TRUE, deleted);
+        repository.deleteFile("test.png");
     }
 
     @Test
