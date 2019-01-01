@@ -1,9 +1,6 @@
-package com.agilemonkeys.controller.exception;
+package com.agilemonkeys.controller.response.error;
 
-import com.agilemonkeys.exception.CustomerNotFoundException;
-import com.agilemonkeys.exception.PhotoFileException;
-import com.agilemonkeys.exception.UserAlreadyExistsException;
-import com.agilemonkeys.exception.UserNotFoundException;
+import com.agilemonkeys.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +36,15 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = UserAlreadyExistsException.class)
-    protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage());
-        return new ResponseEntity(exceptionResponse, HttpStatus.CONFLICT);
-    }
-
     @ExceptionHandler(value = UserNotFoundException.class)
     protected ResponseEntity<Object> handleConflictUserNotFoundException(UserNotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage());
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage());
+        return new ResponseEntity(exceptionResponse, HttpStatus.CONFLICT);
     }
 }
