@@ -43,6 +43,14 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.1.1.RELEASE'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.1.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.1.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.1.2.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.1.2.RELEASE'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
+    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.1.2.RELEASE'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 }
 
 test {
