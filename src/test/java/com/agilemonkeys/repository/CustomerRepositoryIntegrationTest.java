@@ -2,7 +2,7 @@ package com.agilemonkeys.repository;
 
 import com.agilemonkeys.domain.Customer;
 import com.agilemonkeys.domain.Photo;
-import com.agilemonkeys.exception.CustomerRepositoryException;
+import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.repository.impl.CustomerRepositoryImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -197,7 +197,7 @@ public class CustomerRepositoryIntegrationTest {
         customerRepository.delete(savedCustomer.getId());
     }
 
-    @Test(expected = CustomerRepositoryException.class)
+    @Test(expected = CustomerNotFoundException.class)
     public void testUpdateWithNonExistentCustomer(){
         customerRepository.update(Customer.builder().id("fake-id").build());
     }
@@ -207,7 +207,7 @@ public class CustomerRepositoryIntegrationTest {
         customerRepository.update(null);
     }
 
-    @Test(expected = CustomerRepositoryException.class)
+    @Test(expected = CustomerNotFoundException.class)
     public void testDeleteNonExistentCustomer () {
         customerRepository.delete("fake-id");
     }
