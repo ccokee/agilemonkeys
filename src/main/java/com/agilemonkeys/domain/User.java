@@ -1,6 +1,6 @@
 package com.agilemonkeys.domain;
 
-import com.agilemonkeys.controller.UserValidationGroup;
+import com.agilemonkeys.controller.validation.UserValidationGroup;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
