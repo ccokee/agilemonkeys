@@ -1,16 +1,14 @@
 package com.agilemonkeys.service;
 
-import com.agilemonkeys.controller.RequestBody.CustomerRequestBody;
 import com.agilemonkeys.domain.Customer;
 import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.repository.CustomerRepository;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,45 +17,43 @@ public class CustomerManagerService {
     private static final Logger log = LoggerFactory.getLogger(CustomerManagerService.class);
 
     @Autowired
-    @Qualifier("fakeRepository")
+    @Qualifier("CustomerRepositoryImpl")
     private CustomerRepository customerRepository;
 
     public CustomerManagerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
-    public void addCustomer(CustomerRequestBody customerRequestBody, MultipartFile profilePicture) {
-        log.info("Service received new Customer {} with picture {} to be added.", customerRequestBody, profilePicture.getName());
-        Customer customer = Customer.builder()
-                .name(customerRequestBody.getName())
-                .surname(customerRequestBody.getSurname())
-                .email(customerRequestBody.getEmail())
-                .build();
-        customerRepository.addCustomer(customer);
+    public void add(@NonNull Customer customer) {
+        log.info("Service received new Customer {} to be added.", customer.toString());
+        customerRepository.add(customer);
     }
 
-    public List<Customer> getCustomers() {
-        log.info("Service retrieving all customers.");
-        return customerRepository.findAll();
-    }
-
-    public Customer findById(String id) {
-        log.info("Service retrieving Customer {}.", id);
+    public Customer findById(@NonNull String id) {
+        log.info("Service retrieving Customer with ID {}.", id);
         Optional<Customer> customer = customerRepository.findById(id);
 
         if (!customer.isPresent())
-            throw new CustomerNotFoundException("Customer " + id + " not found.");
+            throw new CustomerNotFoundException("Customer ID " + id + " not found.");
 
         return customer.get();
     }
 
-    public void deleteCustomer(String id) {
-        log.info("Service deleting Customer {}.", id);
-        Optional<Customer> customer = customerRepository.findById(id);
+    public Iterable<Customer> findAll() {
+        log.info("Service retrieving all customers.");
+        return customerRepository.findAll();
+    }
 
-        if (!customer.isPresent())
-            throw new CustomerNotFoundException("Customer " + id + " not found.");
+    public void update(@NonNull Customer customer) {
+        if(customer.getId() == null)
+            throw new CustomerNotFoundException("Id must be provided in Request.");
 
-        customerRepository.deleteCustomer(id);
+        log.info("Service updating Customer {}", customer.getId());
+        customerRepository.update(customer);
+    }
+
+    public void delete(@NonNull String id) {
+        log.info("Service deleting Customer with ID {}.", id);
+        customerRepository.delete(id);
     }
 }
