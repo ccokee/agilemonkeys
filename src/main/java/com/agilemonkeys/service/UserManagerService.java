@@ -1,6 +1,7 @@
 package com.agilemonkeys.service;
 
 import com.agilemonkeys.domain.User;
+import com.agilemonkeys.exception.UserAlreadyExistsException;
 import com.agilemonkeys.exception.UserNotFoundException;
 import com.agilemonkeys.repository.UserRepository;
 import lombok.NonNull;
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
@@ -35,6 +37,7 @@ public class UserManagerService {
      * Add new {@link User} to the Repository.
      * @param user instance of {@link User}.
      * @return The persisted {@link User} instance.
+     * @throws  UserAlreadyExistsException if adding an existing user.
      */
     public User add(@NonNull User user) {
         log.info("Service received new User {} to be added.", user.toString());
@@ -43,7 +46,11 @@ public class UserManagerService {
         // This is where we should send an email to new User with the auto-generated random password so he can reset it.
 
         user.setNew(true);
-        return userRepository.save(user);
+        try{
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException ex){
+            throw new UserAlreadyExistsException("User " + user.getUsername() + " already exists.");
+        }
     }
 
     /**
@@ -74,16 +81,16 @@ public class UserManagerService {
      * Update existing {@link User}.
      * @param user instance of {@link User}.
      * @return updated {@link User}.
-     * @throws UserNotFoundException upon Failure.
+     * @throws UserNotFoundException if username is null or if user doesn't exist.
      */
-    public User update(@NonNull User user) {
+    public void update(@NonNull User user) {
         if(user.getUsername() == null)
             throw new UserNotFoundException("username must be provided in Request.");
 
         log.info("Service updating User {}", user.getUsername());
-        user.setNew(false);
-
-        return userRepository.save(user);
+        int numberOfRowUpdated = userRepository.update(user.getName(), user.getSurname(), user.getRole(), user.getUsername());
+        if(numberOfRowUpdated == 0)
+            throw new UserNotFoundException("Username " + user.getUsername() + " doesn't exist in DB.");
     }
 
     /**
@@ -96,7 +103,7 @@ public class UserManagerService {
         int numberOfRowDeleted = userRepository.deleteByUsername(username);
 
         if(numberOfRowDeleted == 0)
-            throw new UserNotFoundException("Provided username doesn't exist in DB.");
+            throw new UserNotFoundException("Username " + username + " doesn't exist in DB.");
     }
 
     /**
