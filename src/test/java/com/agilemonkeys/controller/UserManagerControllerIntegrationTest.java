@@ -33,6 +33,7 @@ import static org.hamcrest.core.Is.is;
 public class UserManagerControllerIntegrationTest {
 
     private static String username = "user1";
+    private static String username2 = "user2";
     private static String password = "welcome1";
 
     @Autowired
@@ -112,7 +113,7 @@ public class UserManagerControllerIntegrationTest {
                 .with(httpBasic(username, password)))
                 .andExpect(status().isOk());
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -134,7 +135,7 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Username must contain at least one non-whitespace character.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -156,7 +157,7 @@ public class UserManagerControllerIntegrationTest {
                     .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Username must have between 5 and 32 characters.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -178,7 +179,7 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Password is auto-generated.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -200,7 +201,7 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Role must be provided.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -231,7 +232,7 @@ public class UserManagerControllerIntegrationTest {
                 .with(httpBasic(username, password)))
                 .andExpect(status().isOk());
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -249,7 +250,7 @@ public class UserManagerControllerIntegrationTest {
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -266,7 +267,7 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("User with username fake-username not found.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -287,7 +288,7 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Username airode doesn't exist in DB.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
     }
 
     /**
@@ -304,7 +305,28 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Username fake-username doesn't exist in DB.")));
 
-        deleteAdminUser(username);
+        deleteUser(username);
+    }
+
+    /**
+     * Try any action when user has USER role and is not authorized.
+     * HTTP 404 Not found expected. Custom error message.
+     */
+    @Test
+    public void testAddWhenUserIsNotAdmin() throws Exception {
+        insertNewUser(username2);
+
+        Gson gson = new Gson();
+        User user = getUser();
+        String json = gson.toJson(user);
+
+        // Add new User.
+        mockMvc.perform(post("/user")
+                .content(json).with(httpBasic(username2, password))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        deleteUser(username2);
     }
 
     private User getUser() {
@@ -329,7 +351,11 @@ public class UserManagerControllerIntegrationTest {
         jdbcTemplate.execute("INSERT INTO users(username, password, role) VALUES('" + username + "','$2a$10$AjHGc4x3Nez/p4ZpvFDWeO6FGxee/cVqj5KHHnHfuLnIOzC5ag4fm','ADMIN');");
     }
 
-    private void deleteAdminUser(String username) {
+    private void insertNewUser(String username) {
+        jdbcTemplate.execute("INSERT INTO users(username, password, role) VALUES('" + username + "','$2a$10$AjHGc4x3Nez/p4ZpvFDWeO6FGxee/cVqj5KHHnHfuLnIOzC5ag4fm','USER');");
+    }
+
+    private void deleteUser(String username) {
         jdbcTemplate.execute("DELETE FROM users where username='" + username + "';");
     }
 }
