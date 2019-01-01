@@ -1,4 +1,4 @@
-package com.agilemonkeys.controller.exception;
+package com.agilemonkeys.controller.response.error;
 
 import lombok.Builder;
 import lombok.Data;
