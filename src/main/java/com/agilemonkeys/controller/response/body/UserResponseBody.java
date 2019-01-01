@@ -1,4 +1,4 @@
-package com.agilemonkeys.controller.responseBody;
+package com.agilemonkeys.controller.response.body;
 
 import com.agilemonkeys.domain.Role;
 import lombok.Builder;
