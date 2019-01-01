@@ -1,6 +1,7 @@
 package com.agilemonkeys.controller;
 
-import com.agilemonkeys.controller.ResponseBody.UserResponseBody;
+import com.agilemonkeys.controller.response.body.UserResponseBody;
+import com.agilemonkeys.controller.validation.UserValidationGroup;
 import com.agilemonkeys.domain.User;
 import com.agilemonkeys.mapper.UserMapper;
 import com.agilemonkeys.service.UserManagerService;
@@ -62,7 +63,7 @@ public class UserManagerController {
         log.info("Retrieving User {}.", username);
         User user = userManagerService.findByUsername(username);
 
-        UserResponseBody userResponseBody = UserMapper.userToUserReponseBody(user);
+        UserResponseBody userResponseBody = UserMapper.userToUserResponseBody(user);
         return ResponseEntity.ok(userResponseBody);
     }
 
@@ -78,7 +79,7 @@ public class UserManagerController {
         Iterable<User> users = userManagerService.findAll();
 
         List<UserResponseBody> userResponseBodies = StreamSupport.stream(users.spliterator(), false)
-                .map(UserMapper::userToUserReponseBody)
+                .map(UserMapper::userToUserResponseBody)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(userResponseBodies);
