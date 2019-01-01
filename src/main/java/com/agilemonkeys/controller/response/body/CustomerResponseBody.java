@@ -1,4 +1,4 @@
-package com.agilemonkeys.controller.ResponseBody;
+package com.agilemonkeys.controller.responseBody;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CustomerResponseBody {
-    Integer id;
+    String id;
     String name;
     String surname;
     String photoUrl;
