@@ -1,4 +1,4 @@
-package com.agilemonkeys.controller;
+package com.agilemonkeys.controller.validation;
 
 public class UserValidationGroup {
     public interface Add {}
