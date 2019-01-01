@@ -24,9 +24,10 @@ public class CustomerManagerService {
         this.customerRepository = customerRepository;
     }
 
-    public void add(@NonNull Customer customer) {
-        log.info("Service received new Customer {} to be added.", customer.toString());
-        customerRepository.add(customer);
+    public String add(@NonNull Customer customer) {
+        log.info("Service received new Customer to be added.");
+        Customer addedCostumer = customerRepository.add(customer);
+        return addedCostumer.getId();
     }
 
     public Customer findById(@NonNull String id) {
