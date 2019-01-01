@@ -2,12 +2,12 @@ package com.agilemonkeys.service;
 
 import com.agilemonkeys.domain.Role;
 import com.agilemonkeys.domain.User;
+import com.agilemonkeys.exception.UserAlreadyExistsException;
 import com.agilemonkeys.exception.UserNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class UserManagerServiceIntegrationTest {
         userManagerService.deleteByUsername(user.getUsername());
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = UserAlreadyExistsException.class)
     public void testAddTwiceWithSameUsername() {
         User user = getUser1();
         User user2 = getUser1();
@@ -93,16 +93,19 @@ public class UserManagerServiceIntegrationTest {
         userManagerService.add(user);
 
         user.setName("Tain");
-        user.setRole(Role.USER);
+        user.setSurname("Asdq");
+        user.setRole(Role.ADMIN);
 
-        User updatedUser = userManagerService.update(user);
-        assertEquals(user.getName(), updatedUser.getName());
-        assertEquals(user.getRole(), updatedUser.getRole());
+        userManagerService.update(user);
+        User foundUser = userManagerService.findByUsername(user.getUsername());
+        assertEquals(user.getName(), foundUser.getName());
+        assertEquals(user.getSurname(), foundUser.getSurname());
+        assertEquals(user.getRole(), foundUser.getRole());
 
         userManagerService.deleteByUsername(user.getUsername());
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = UserNotFoundException.class)
     public void testUpdateWithNewUser() {
         User user = getUser2();
         userManagerService.update(user);
