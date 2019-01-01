@@ -1,4 +1,4 @@
-package com.agilemonkeys;
+package com.agilemonkeys.config;
 
 import com.agilemonkeys.repository.CustomerRelationalRepository;
 import com.agilemonkeys.repository.CustomerRepository;
