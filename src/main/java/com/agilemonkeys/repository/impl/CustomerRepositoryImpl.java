@@ -2,6 +2,7 @@ package com.agilemonkeys.repository.impl;
 
 import com.agilemonkeys.domain.Customer;
 import com.agilemonkeys.domain.Photo;
+import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.exception.CustomerRepositoryException;
 import com.agilemonkeys.exception.FileStorageException;
 import com.agilemonkeys.repository.CustomerRelationalRepository;
@@ -102,7 +103,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new CustomerRepositoryException(e);
             }
         } else {
-            throw new CustomerRepositoryException("Provided Customer " + customer.getId() + " doesn't exist in Repository.");
+            throw new CustomerNotFoundException("Provided Customer ID " + customer.getId() + " doesn't exist in Repository.");
         }
     }
 
@@ -120,7 +121,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new CustomerRepositoryException(e);
             }
         } else {
-            throw new CustomerRepositoryException("Customer " + id + " wasn't found.");
+            throw new CustomerNotFoundException("Customer ID " + id + " wasn't found.");
         }
     }
 
