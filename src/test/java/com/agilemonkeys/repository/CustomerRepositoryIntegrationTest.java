@@ -30,10 +30,11 @@ public class CustomerRepositoryIntegrationTest {
     @Test
     public void testAddAndFindById() throws Exception{
 
+        // Add new Customer.
         Customer customer = getCustomerWithPhoto();
-
         Customer savedCustomer = customerRepository.add(customer);
         assertNotNull(savedCustomer);
+
         // Checking the save operation generated id and photoUrl.
         assertNotNull(savedCustomer.getId());
         assertNotNull(savedCustomer.getPhotoUrl());
@@ -48,12 +49,14 @@ public class CustomerRepositoryIntegrationTest {
         assertEquals(savedCustomer.getId(), foundCustomer.get().getId());
         assertEquals(savedCustomer.getPhotoUrl(), foundCustomer.get().getPhotoUrl());
 
+        // Delete customer.
         customerRepository.delete(savedCustomer.getId());
     }
 
     @Test
     public void testAddWithoutPhoto() {
 
+        // Add new Customer without a Photo.
         Customer customer = getCustomerWithoutPhoto();
         Customer savedCustomer = customerRepository.add(customer);
         assertNotNull(savedCustomer);
@@ -66,6 +69,7 @@ public class CustomerRepositoryIntegrationTest {
         customer.setId(savedCustomer.getId());
         assertEquals(customer, savedCustomer);
 
+        // Delete customer
         customerRepository.delete(savedCustomer.getId());
     }
 
@@ -82,79 +86,98 @@ public class CustomerRepositoryIntegrationTest {
 
     @Test
     public void testFindAll() {
+        // Add new customer
         Customer customer = getCustomerWithoutPhoto();
         Customer savedCustomer = customerRepository.add(customer);
 
+        // Add another new customer
         Customer customer2 = getCustomerWithoutPhoto();
         Customer savedCustomer2 = customerRepository.add(customer2);
 
+        // Check findAll will retrieve at least 2 customers (the 2 recently added, there could be more)
         List<Customer> customers = new ArrayList<>();
         customerRepository.findAll().forEach(customers::add);
-
         assertTrue(customers.size() >= 2);
 
+        // Delete both customers
         customerRepository.delete(savedCustomer.getId());
         customerRepository.delete(savedCustomer2.getId());
     }
 
     @Test
     public void testUpdateOldCustomerWithPhotoAndUpdatedPhoto() throws Exception{
+        // Add new customer with Photo
         Customer customer = getCustomerWithPhoto();
         Customer savedCustomer = customerRepository.add(customer);
 
+        // Create new Photo
         Photo photo = createPhoto("image2.jpeg");
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.of(photo));
 
+        // Update customer with new Photo and verify photo was updated.
         Customer updatedCustomer = customerRepository.update(savedCustomer);
         assertEquals("Juan", updatedCustomer.getName());
         assertTrue(updatedCustomer.getPhotoUrl().contains("jpeg"));
 
+        // Delete Customer
         customerRepository.delete(savedCustomer.getId());
     }
 
     @Test
     public void testUpdateOldCustomerWithPhotoAndNewWithoutPhoto() throws Exception{
+        // Add new Customer with Photo
         Customer customer = getCustomerWithPhoto();
         Customer savedCustomer = customerRepository.add(customer);
 
+        // Update customer without a photo
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.empty());
 
+        // Check updated Customer don't have a linked photoUrl since we just deleted
         Customer updatedCustomer = customerRepository.update(savedCustomer);
         assertEquals("Juan", updatedCustomer.getName());
         assertNull(updatedCustomer.getPhotoUrl());
 
+        // Delete Customers
         customerRepository.delete(savedCustomer.getId());
     }
 
     @Test
     public void testUpdateOldCustomerWithoutPhotoAndNewPhoto() throws Exception{
+        //Add new Customer without a photo
         Customer customer = getCustomerWithoutPhoto();
         Customer savedCustomer = customerRepository.add(customer);
 
+        // Update customer with Photo.
         Photo photo = createPhoto("image2.jpeg");
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.of(photo));
 
+        // Check updated customer has now linked photoUrl since we just added one
         Customer updatedCustomer = customerRepository.update(savedCustomer);
         assertEquals("Juan", updatedCustomer.getName());
         assertTrue(updatedCustomer.getPhotoUrl().contains("jpeg"));
 
+        // Delete Customer
         customerRepository.delete(savedCustomer.getId());
     }
 
     @Test
     public void testUpdateOldCustomerWithoutPhotoAndNewWithoutPhoto() {
+        // Add new Customer without photo
         Customer customer = getCustomerWithoutPhoto();
         Customer savedCustomer = customerRepository.add(customer);
 
+        // Update Customer's name, still no photo added
         savedCustomer.setName("Juan");
 
+        // Check updated customer doesn't have a linked photoUrl.
         Customer updatedCustomer = customerRepository.update(savedCustomer);
         assertEquals("Juan", updatedCustomer.getName());
         assertNull(updatedCustomer.getPhotoUrl());
 
+        // Delete Customer
         customerRepository.delete(savedCustomer.getId());
     }
 
