@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CustomerManagerControllerTest {
+public class CustomerManagerControllerIntegrationTest {
 
     private static String username = "test-user";
     private static String username2 = "test-user-2";
@@ -48,85 +48,89 @@ public class CustomerManagerControllerTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-//    @Test
-//    public void testCrud() throws Exception {
-//        insertNewUser(username);
-//        insertNewUser(username2);
-//
-//        MockMultipartFile costumer = getMultipartCustomer(getCustomer());
-//        MockMultipartFile photo = getMultipartPhoto();
-//
-//        // Add new Customer.
-//        MvcResult mvcResult = mockMvc.perform(multipart("/customer")
-//                .file(costumer)
-//                .file(photo).with(httpBasic(username, password)))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        // Add another new Customer.
-//        MvcResult mvcResult2 = mockMvc.perform(multipart("/customer")
-//                .file(costumer)
-//                .file(photo).with(httpBasic(username, password)))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String id = mvcResult.getResponse().getContentAsString();
-//        String id2 = mvcResult2.getResponse().getContentAsString();
-//
-//        // Retrieve first added Customer by username. Assert values.
-//        mockMvc.perform(get("/customer/" + id)
-//                .contentType(APPLICATION_JSON)
-//                .with(httpBasic(username, password)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(id)))
-//                .andExpect(jsonPath("$.name", is("John")))
-//                .andExpect(jsonPath("$.surname", is("Mayer")))
-//                .andExpect(jsonPath("$.photoUrl", not(isEmptyString())))
-//                .andExpect(jsonPath("$.createdBy", is(username)))
-//                .andExpect(jsonPath("$.lastModifiedBy", is(username)))
-//                .andExpect(jsonPath("$.email", is("test@gmail.com")));
-//
-//        // Find all customers.
-//        mockMvc.perform(get("/customers")
-//                .with(httpBasic(username, password)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))));
-//
-//
-//        // Update first added Customer.
-//        MockMultipartFile updatedCustomer = getMultipartUpdatedCustomer(id);
-//        mockMvc.perform(getUpdateBuilder()
-//                .file(updatedCustomer).with(httpBasic(username2, password)))
-//                .andExpect(status().isOk());
-//
-//        // Get first user by its id and check everything was updated. Also We are login with another username o check
-//        // createdBy didn't change but lastModifiedBy did.
-//        mockMvc.perform(get("/customer/" + id)
-//                .contentType(APPLICATION_JSON)
-//                .with(httpBasic(username2, password)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(id)))
-//                .andExpect(jsonPath("$.name", is("Tony")))
-//                .andExpect(jsonPath("$.surname", is("Smith")))
-//                .andExpect(jsonPath("$.photoUrl", is(nullValue())))
-//                .andExpect(jsonPath("$.createdBy", is(username)))
-//                .andExpect(jsonPath("$.lastModifiedBy", is(username2)))
-//                .andExpect(jsonPath("$.email", is("test-2@gmail.com")));
-//
-//        // Delete both added users.
-//        mockMvc.perform(delete("/customer/" + id)
-//                .contentType(APPLICATION_JSON)
-//                .with(httpBasic(username2, password)))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(delete("/customer/" + id2)
-//                .contentType(APPLICATION_JSON)
-//                .with(httpBasic(username2, password)))
-//                .andExpect(status().isOk());
-//
-//        deleteUser(username);
-//        deleteUser(username2);
-//    }
+    /**
+     * CRUD successful operations.
+     */
+    @Test
+    public void testCrud() throws Exception {
+        insertNewUser(username);
+        insertNewAdmin(username2);
+
+        Customer customer = getCustomer();
+        MockMultipartFile costumer = getMultipartCustomer(customer);
+        MockMultipartFile photo = getMultipartPhoto();
+
+        // Add new Customer.
+        MvcResult mvcResult = mockMvc.perform(multipart("/customer")
+                .file(costumer)
+                .file(photo).with(httpBasic(username, password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Add another new Customer.
+        MvcResult mvcResult2 = mockMvc.perform(multipart("/customer")
+                .file(costumer)
+                .file(photo).with(httpBasic(username, password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String id = mvcResult.getResponse().getContentAsString();
+        String id2 = mvcResult2.getResponse().getContentAsString();
+
+        // Retrieve first added Customer by username. Assert values.
+        mockMvc.perform(get("/customer/" + id)
+                .contentType(APPLICATION_JSON)
+                .with(httpBasic(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(id)))
+                .andExpect(jsonPath("$.name", is("John")))
+                .andExpect(jsonPath("$.surname", is("Mayer")))
+                .andExpect(jsonPath("$.photoUrl", not(isEmptyString())))
+                .andExpect(jsonPath("$.createdBy", is(username)))
+                .andExpect(jsonPath("$.lastModifiedBy", is(username)))
+                .andExpect(jsonPath("$.email", is("test@gmail.com")));
+
+        // Find all customers.
+        mockMvc.perform(get("/customers")
+                .with(httpBasic(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))));
+
+
+        // Update first added Customer.
+        MockMultipartFile updatedCustomer = getMultipartUpdatedCustomer(id);
+        mockMvc.perform(getUpdateBuilder()
+                .file(updatedCustomer).with(httpBasic(username2, password)))
+                .andExpect(status().isOk());
+
+        // Get first user by its id and check everything was updated. Also We are login with another username o check
+        // createdBy didn't change but lastModifiedBy did.
+        mockMvc.perform(get("/customer/" + id)
+                .contentType(APPLICATION_JSON)
+                .with(httpBasic(username2, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(id)))
+                .andExpect(jsonPath("$.name", is("Tony")))
+                .andExpect(jsonPath("$.surname", is("Smith")))
+                .andExpect(jsonPath("$.photoUrl", is(nullValue())))
+                .andExpect(jsonPath("$.createdBy", is(username)))
+                .andExpect(jsonPath("$.lastModifiedBy", is(username2)))
+                .andExpect(jsonPath("$.email", is("test-2@gmail.com")));
+
+        // Delete both added users.
+        mockMvc.perform(delete("/customer/" + id)
+                .contentType(APPLICATION_JSON)
+                .with(httpBasic(username2, password)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete("/customer/" + id2)
+                .contentType(APPLICATION_JSON)
+                .with(httpBasic(username2, password)))
+                .andExpect(status().isOk());
+
+        deleteUser(username);
+        deleteUser(username2);
+    }
 
     /**
      * Add new Customer with provided id.
@@ -235,7 +239,7 @@ public class CustomerManagerControllerTest {
                 .file(getMultipartCustomer(getCustomer()))
                 .file(getMultipartAnotherFile()).with(httpBasic(username, password)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("Provided while must be either a PNG, GIF or JPEG.")));
+                .andExpect(jsonPath("$.message", is("Provided file must be either a PNG, GIF or JPEG and must be less than 5 MB.")));
 
         deleteUser(username);
     }
@@ -253,6 +257,40 @@ public class CustomerManagerControllerTest {
                 .with(httpBasic(username,password)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Customer ID fake-id not found.")));
+
+        deleteUser(username);
+    }
+
+    /**
+     * Update Customer with New Customer
+     * HTTP 404 not found expected. Custom error message.
+     */
+    @Test
+    public void testUpdateWithNewCustomer() throws Exception {
+        insertNewUser(username);
+
+        MockMultipartFile updatedCustomer = getMultipartUpdatedCustomer("fake-id");
+        mockMvc.perform(getUpdateBuilder()
+                .file(updatedCustomer).with(httpBasic(username, password)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Provided Customer ID fake-id doesn't exist in Repository.")));
+
+        deleteUser(username);
+    }
+
+    /**
+     * Delete Customer when Customer not found
+     * HTTP 404 not found expected. Custom error message.
+     */
+    @Test
+    public void testDeleteNotFound() throws Exception {
+        insertNewUser(username);
+
+        mockMvc.perform(delete("/customer/fake-id")
+            .contentType(APPLICATION_JSON)
+            .with(httpBasic(username, password)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", is("Customer ID fake-id wasn't found.")));
 
         deleteUser(username);
     }
@@ -280,7 +318,6 @@ public class CustomerManagerControllerTest {
     private MockMultipartFile getMultipartCustomer(Customer customer) throws Exception {
         Gson gson = new Gson();
         String json = gson.toJson(customer);
-        System.out.println("ID" + json);
         return new MockMultipartFile("customer", "", "application/json", json.getBytes());
     }
 
@@ -312,9 +349,11 @@ public class CustomerManagerControllerTest {
         jdbcTemplate.execute("INSERT INTO users(username, password, role) VALUES('" + username + "','$2a$10$AjHGc4x3Nez/p4ZpvFDWeO6FGxee/cVqj5KHHnHfuLnIOzC5ag4fm','USER');");
     }
 
+    private void insertNewAdmin(String username) {
+        jdbcTemplate.execute("INSERT INTO users(username, password, role) VALUES('" + username + "','$2a$10$AjHGc4x3Nez/p4ZpvFDWeO6FGxee/cVqj5KHHnHfuLnIOzC5ag4fm','ADMIN');");
+    }
+
     private void deleteUser(String username) {
         jdbcTemplate.execute("DELETE FROM users where username='" + username + "';");
     }
-
-
 }
