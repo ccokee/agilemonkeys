@@ -115,10 +115,14 @@ public class CustomerRepositoryIntegrationTest {
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.of(photo));
 
-        // Update customer with new Photo and verify photo was updated.
-        Customer updatedCustomer = customerRepository.update(savedCustomer);
-        assertEquals("Juan", updatedCustomer.getName());
-        assertTrue(updatedCustomer.getPhotoUrl().contains("jpeg"));
+        // Update customer and verify it worked
+        int updatedCustomer = customerRepository.update(savedCustomer);
+        assertEquals(1, updatedCustomer);
+
+        // Check updated customer has a new name and new photo
+        Customer foundCustomer = customerRepository.findById(savedCustomer.getId()).get();
+        assertEquals(savedCustomer.getName(), foundCustomer.getName());
+        assertTrue(foundCustomer.getPhotoUrl().contains("jpeg"));
 
         // Delete Customer
         customerRepository.delete(savedCustomer.getId());
@@ -134,10 +138,14 @@ public class CustomerRepositoryIntegrationTest {
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.empty());
 
-        // Check updated Customer don't have a linked photoUrl since we just deleted
-        Customer updatedCustomer = customerRepository.update(savedCustomer);
-        assertEquals("Juan", updatedCustomer.getName());
-        assertNull(updatedCustomer.getPhotoUrl());
+        // Update customer and verify it worked
+        int updatedCustomer = customerRepository.update(savedCustomer);
+        assertEquals(1, updatedCustomer);
+
+        // Check updated customer has a new name and no reference to any photo (since it was erased by the update).
+        Customer foundCustomer = customerRepository.findById(savedCustomer.getId()).get();
+        assertEquals(savedCustomer.getName(), foundCustomer.getName());
+        assertNull(savedCustomer.getPhotoUrl());
 
         // Delete Customers
         customerRepository.delete(savedCustomer.getId());
@@ -154,10 +162,14 @@ public class CustomerRepositoryIntegrationTest {
         savedCustomer.setName("Juan");
         savedCustomer.setPhoto(Optional.of(photo));
 
-        // Check updated customer has now linked photoUrl since we just added one
-        Customer updatedCustomer = customerRepository.update(savedCustomer);
-        assertEquals("Juan", updatedCustomer.getName());
-        assertTrue(updatedCustomer.getPhotoUrl().contains("jpeg"));
+        // Update customer and verify it worked
+        int updatedCustomer = customerRepository.update(savedCustomer);
+        assertEquals(1, updatedCustomer);
+
+        // Check updated customer has a new name and now has a reference to a photoUrl.
+        Customer foundCustomer = customerRepository.findById(savedCustomer.getId()).get();
+        assertEquals(savedCustomer.getName(), foundCustomer.getName());
+        assertTrue(foundCustomer.getPhotoUrl().contains("jpeg"));
 
         // Delete Customer
         customerRepository.delete(savedCustomer.getId());
@@ -172,10 +184,14 @@ public class CustomerRepositoryIntegrationTest {
         // Update Customer's name, still no photo added
         savedCustomer.setName("Juan");
 
-        // Check updated customer doesn't have a linked photoUrl.
-        Customer updatedCustomer = customerRepository.update(savedCustomer);
-        assertEquals("Juan", updatedCustomer.getName());
-        assertNull(updatedCustomer.getPhotoUrl());
+        // Update customer and verify it worked
+        int updatedCustomer = customerRepository.update(savedCustomer);
+        assertEquals(1, updatedCustomer);
+
+        // Check updated customer has a new name and still doesn't have a reference to photoUrl.
+        Customer foundCustomer = customerRepository.findById(savedCustomer.getId()).get();
+        assertEquals(savedCustomer.getName(), foundCustomer.getName());
+        assertNull(foundCustomer.getPhotoUrl());
 
         // Delete Customer
         customerRepository.delete(savedCustomer.getId());

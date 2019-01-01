@@ -32,10 +32,10 @@ public interface CustomerRepository {
     /**
      * Update existing {@link Customer}.
      * @param customer instance of {@link Customer}.
-     * @return updated {@link Customer}.
+     * @return number of rows updated.
      * @throws CustomerRepositoryException upon Failure.
      */
-    Customer update(Customer customer);
+    int update(Customer customer);
 
     /**
      * Delete {@link Customer} given its id

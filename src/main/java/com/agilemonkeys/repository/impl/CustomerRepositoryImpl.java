@@ -76,7 +76,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public Customer update(@NonNull Customer customer) {
+    public int update(@NonNull Customer customer) {
         log.info("Updating Customer {}...", customer.getId());
         Optional<Customer> existingCustomer = customerRelationalRepository.findById(customer.getId());
         Customer updatedCustomer = null;
@@ -91,15 +91,19 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             customer.setPhotoUrl(photoUrl);
 
             try{
-                updatedCustomer = customerRelationalRepository.save(customer);
+                return customerRelationalRepository.update(
+                        customer.getName(),
+                        customer.getSurname(),
+                        customer.getLastModifiedBy(),
+                        customer.getPhotoUrl(),
+                        customer.getEmail(),
+                        customer.getId());
             } catch (Exception e) {
                 throw new CustomerRepositoryException(e);
             }
         } else {
             throw new CustomerRepositoryException("Provided Customer " + customer.getId() + " doesn't exist in Repository.");
         }
-
-        return updatedCustomer;
     }
 
     @Override
