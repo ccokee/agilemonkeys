@@ -116,7 +116,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new CustomerRepositoryException(e);
             }
         } else {
-            throw new CustomerRepositoryException("Customer " + id + " wasn't found. Deleting nothing.");
+            throw new CustomerRepositoryException("Customer " + id + " wasn't found.");
         }
     }
 
