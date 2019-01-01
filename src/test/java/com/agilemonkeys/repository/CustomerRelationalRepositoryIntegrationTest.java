@@ -66,9 +66,11 @@ public class CustomerRelationalRepositoryIntegrationTest {
         customer.setName("Juan");
         repository.save(customer);
 
+        // Find updated customer and verify it wa successfully updated.
         Optional<Customer> foundCustomerAfterChange = repository.findById(customer.getId());
         assertEquals("Juan", foundCustomerAfterChange.get().getName());
 
+        // Find all customers
         repository.findAll().forEach(customers::add);
         assertTrue(customers.size() >= 2);
         customers.clear();
