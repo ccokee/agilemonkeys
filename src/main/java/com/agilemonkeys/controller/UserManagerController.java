@@ -1,5 +1,6 @@
 package com.agilemonkeys.controller;
 
+import com.agilemonkeys.controller.response.body.ResponseBody;
 import com.agilemonkeys.controller.response.body.UserResponseBody;
 import com.agilemonkeys.controller.validation.UserValidationGroup;
 import com.agilemonkeys.domain.User;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -49,7 +52,12 @@ public class UserManagerController {
         log.info("Adding new User {}", user.getUsername());
 
         userManagerService.add(user);
-        return new ResponseEntity(HttpStatus.OK);
+
+        ResponseBody ok = ResponseBody.builder()
+                .timestamp(new Date())
+                .message("User " + user.getUsername() + " successfully added.")
+                .build();
+        return new ResponseEntity(ok,HttpStatus.OK);
     }
 
     /**
@@ -100,7 +108,11 @@ public class UserManagerController {
         log.info("Updating User {}", user.getUsername());
 
         userManagerService.update(user);
-        return new ResponseEntity(HttpStatus.OK);
+        ResponseBody ok = ResponseBody.builder()
+                .timestamp(new Date())
+                .message("User " + user.getUsername() + " successfully updated.")
+                .build();
+        return new ResponseEntity(ok, HttpStatus.OK);
     }
 
     /**
@@ -114,6 +126,10 @@ public class UserManagerController {
         log.info("Deleting User {}", username);
 
         userManagerService.deleteByUsername(username);
-        return new ResponseEntity(HttpStatus.OK);
+        ResponseBody ok = ResponseBody.builder()
+                .timestamp(new Date())
+                .message("User " + username + " successfully deleted.")
+                .build();
+        return new ResponseEntity(ok, HttpStatus.OK);
     }
 }

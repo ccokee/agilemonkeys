@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.NestedServletException;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
@@ -61,13 +62,16 @@ public class UserManagerControllerIntegrationTest {
         mockMvc.perform(post("/user")
                 .content(json).with(httpBasic(username, password))
                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",is("User airode successfully added.")));
 
         // Add another new user.
         mockMvc.perform(post("/user")
                 .content(json2).with(httpBasic(username, password))
                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",is("User airode2 successfully added.")));
+
 
         // Retrieve first added user by username. Assert values.
         mockMvc.perform(get("/user/airode")
@@ -93,7 +97,8 @@ public class UserManagerControllerIntegrationTest {
         mockMvc.perform(put("/update-user")
                 .content(updatedJson).with(httpBasic(username, password))
                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("User airode successfully updated.")));
 
         // Get first user by its username to check name was changed.
         mockMvc.perform(get("/user/airode")
@@ -106,12 +111,14 @@ public class UserManagerControllerIntegrationTest {
         mockMvc.perform(delete("/user/airode")
                 .contentType(APPLICATION_JSON)
                 .with(httpBasic(username, password)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("User airode successfully deleted.")));
 
         mockMvc.perform(delete("/user/airode2")
                 .contentType(APPLICATION_JSON)
                 .with(httpBasic(username, password)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("User airode2 successfully deleted.")));
 
         deleteUser(username);
     }
@@ -219,7 +226,9 @@ public class UserManagerControllerIntegrationTest {
         mockMvc.perform(post("/user")
                 .content(json).with(httpBasic(username, password))
                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",is("User airode successfully added.")));
+
 
         mockMvc.perform(post("/user")
                 .content(json).with(httpBasic(username, password))
@@ -230,7 +239,8 @@ public class UserManagerControllerIntegrationTest {
         mockMvc.perform(delete("/user/airode")
                 .contentType(APPLICATION_JSON)
                 .with(httpBasic(username, password)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("User airode successfully deleted.")));
 
         deleteUser(username);
     }
@@ -239,18 +249,20 @@ public class UserManagerControllerIntegrationTest {
      * Add new User Role different from defined one (ROLE, ADMIN).
      * HTTP 400 Bad request expected. Custom error message.
      */
-    @Test
+    @Test(expected = NestedServletException.class)
     public void testAddWithNonExistingRole() throws Exception {
         insertNewAdminUser(username);
 
         String json = "{\"username\":\"airode\",\"name\":\"Rodrigo\", \"surname\":\"Doria\", \"role\":\"FAKE\"}";
 
-        mockMvc.perform(post("/user")
-                .content(json).with(httpBasic(username, password))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+        try{
+            mockMvc.perform(post("/user")
+                    .content(json).with(httpBasic(username, password))
+                    .contentType(APPLICATION_JSON));
+        } finally {
+            deleteUser(username);
 
-        deleteUser(username);
+        }
     }
 
     /**
