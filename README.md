@@ -16,38 +16,165 @@ All the operations related to User can only be called by an ADMIN User.
     
 * **Method** `POST`
 
-* **URL Params**
+* **Head** Content-Type: application/json
 
-* **Required** None
-
-* **Data Params**
+* **Data** {"username":"test-user", "name":"John", "surname":"Mayer", "role":"USER"}
 
 * **Success Response:**
 
-  * **Code:** 200 
-    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User username successfully added."}`
+  * **Code:** 200
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully added."}`
 
 * **Error Responses:**
 
-  * **Code:** 400 Bad Request <br />
+    **Condition:** Username is not included in request or is empty or is a white space
+  * **Code:** 400 Bad Request
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must contain at least one non-whitespace character."}`
 
-  * **Code:** 400 Bad Request <br />
+  * **Condition:** Username has less than 5 characters or has more than 32.
+    **Code:** 400 Bad Request
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must have between 5 and 32 characters."}`
 
-  * **Code:** 400 Bad Request <br />
-    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must have between 5 and 32 characters."}`
+  * **Condition:** Username has less than 5 characters or has more than 32.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Name must be between 1 and 50 characters."}`
 
-  * **Code:** 400 Bad Request <br />
+  * **Condition:** Surname has less than 5 characters or has more than 32.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Surname must be between 1 and 50 characters."}`
+
+  * **Condition:** Password is provided in the request.
+    **Code:** 400 Bad Request
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Password is auto-generated."}`
 
-  * **Code:** 400 Bad Request <br />
+  * **Condition:** Role is not provided in the request.
+    **Code:** 400 Bad Request
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role must be provided."}`
 
-  * **Code:** 409 Conflicr <br />
-    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User XXX already exists."}`
+  * **Condition:** Role is different from ADMIN or USER
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role can only be ADMIN or USER."}`
+
+  * **Condition:** Provided username already exists in the DB.
+    **Code:** 409 Conflict
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} already exists."}`
 
 * **Sample Call:**
   ```sh
     $ curl -u username:password -d '{"username":"test-user", "name":"John", "surname":"Mayer", "role":"USER"}' -H "Content-Type: application/json" -X POST http://localhost:8080/user
-  ```  
+  ```
+
+
+## Find User by username
+
+* **URL** /user/{username}
+
+* **Method** `GET`
+
+* **URL Params** username
+
+* **Success Response:**
+
+  * **Code:** 200
+    **Content:** `{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}`
+
+* **Error Responses:**
+
+  * **Condition:** Provided username can't be found in the DB.
+    **Code:** 404 Not Found
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User with username {username} not found."}`
+
+* **Sample Call:**
+  ```sh
+    $ curl -u rdoriame:welcome1 http://localhost:8080/user/test-user
+  ```
+
+
+## Find all users
+
+* **URL** /users
+
+* **Method** `GET`
+
+* **Success Response:**
+
+  * **Code:** 200
+    **Content:** `[{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}, {"username":"test-user2","name":"Tony","surname":"Baier","role":"ADMIN"}]`
+
+* **Sample Call:**
+  ```sh
+    $ curl -u rdoriame:welcome1 http://localhost:8080/user/test-user
+  ```
+
+
+## Update User
+
+* **URL** /update-user
+
+* **Method** `PUT`
+
+* **Head** Content-Type: application/json
+
+* **Data** {"username":"test-user", "name":"John", "surname":"Mayer", "role":"USER"}
+
+* **Success Response:**
+
+  * **Code:** 200
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully updated."}`
+
+* **Error Responses:**
+
+  * **Condition:** Username is not included in request or is empty or is a white space
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must contain at least one non-whitespace character."}`
+
+  * **Condition:** Username has less than 5 characters or has more than 32.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Name must be between 1 and 50 characters."}`
+
+  * **Condition:** Surname has less than 5 characters or has more than 32.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Surname must be between 1 and 50 characters."}`
+
+  * **Condition:** Role is not provided in the request.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role must be provided."}`
+
+  * **Condition:** Role is different from ADMIN or USER
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role can only be ADMIN or USER."}`
+
+  * **Condition:** Password is provided in the request.
+    **Code:** 400 Bad Request
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Password needs to be reset from another API."}`
+
+  * **Condition:** Provided username can't be found in the DB.
+    **Code:** 404 Not Found
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username {username} doesn't exist in DB."}`
+
+* **Sample Call:**
+  ```sh
+    $ curl -u rdoriame:welcome1 -d '{"username":"test-user", "name":"Jack", "surname":"Wilson", "role":"ADMIN"}' -H "Content-Type: application/json" -X PUT http://localhost:8080/update-user
+  ```
+
+## Delete user by username
+
+* **URL** /user/{username}
+
+* **Method** `DELETE`
+
+* **Success Response:**
+
+  * **Code:** 200
+    **Content:** `[{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}, {"username":"test-user2","name":"Tony","surname":"Baier","role":"ADMIN"}]`
+
+* **Error Responses:**
+
+  * **Condition:** Provided username can't be found in the DB.
+    **Code:** 404 Not found
+    **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully deleted."}`
+
+* **Sample Call:**
+  ```sh
+    $ curl -u username:password -X DELETE http://localhost:8080/user/test-user
+  ```
