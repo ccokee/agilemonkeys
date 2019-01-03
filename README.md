@@ -22,41 +22,41 @@ All the operations related to User can only be called by an ADMIN User.
 
 * **Success Response:**
 
-  * **Code:** 200
+  * **Code:** 200 <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully added."}`
 
 * **Error Responses:**
 
-    **Condition:** Username is not included in request or is empty or is a white space
-  * **Code:** 400 Bad Request
+  * **Condition:** Username is not included in request or is empty or is a white space <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must contain at least one non-whitespace character."}`
 
-  * **Condition:** Username has less than 5 characters or has more than 32.
-    **Code:** 400 Bad Request
+  * **Condition:** Username has less than 5 characters or has more than 32. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must have between 5 and 32 characters."}`
 
-  * **Condition:** Username has less than 5 characters or has more than 32.
-    **Code:** 400 Bad Request
+  * **Condition:** Username has less than 5 characters or has more than 32. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Name must be between 1 and 50 characters."}`
 
-  * **Condition:** Surname has less than 5 characters or has more than 32.
-    **Code:** 400 Bad Request
+  * **Condition:** Surname has less than 5 characters or has more than 32. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Surname must be between 1 and 50 characters."}`
 
-  * **Condition:** Password is provided in the request.
-    **Code:** 400 Bad Request
+  * **Condition:** Password is provided in the request. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Password is auto-generated."}`
 
-  * **Condition:** Role is not provided in the request.
-    **Code:** 400 Bad Request
+  * **Condition:** Role is not provided in the request. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role must be provided."}`
 
-  * **Condition:** Role is different from ADMIN or USER
-    **Code:** 400 Bad Request
+  * **Condition:** Role is different from ADMIN or USER <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role can only be ADMIN or USER."}`
 
-  * **Condition:** Provided username already exists in the DB.
-    **Code:** 409 Conflict
+  * **Condition:** Provided username already exists in the DB. <br/>
+    **Code:** 409 Conflict <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} already exists."}`
 
 * **Sample Call:**
@@ -75,13 +75,13 @@ All the operations related to User can only be called by an ADMIN User.
 
 * **Success Response:**
 
-  * **Code:** 200
+  * **Code:** 200 <br/>
     **Content:** `{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}`
 
 * **Error Responses:**
 
-  * **Condition:** Provided username can't be found in the DB.
-    **Code:** 404 Not Found
+  * **Condition:** Provided username can't be found in the DB. <br/>
+    **Code:** 404 Not Found <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User with username {username} not found."}`
 
 * **Sample Call:**
@@ -98,7 +98,7 @@ All the operations related to User can only be called by an ADMIN User.
 
 * **Success Response:**
 
-  * **Code:** 200
+  * **Code:** 200 <br/>
     **Content:** `[{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}, {"username":"test-user2","name":"Tony","surname":"Baier","role":"ADMIN"}]`
 
 * **Sample Call:**
@@ -128,28 +128,28 @@ All the operations related to User can only be called by an ADMIN User.
     **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must contain at least one non-whitespace character."}`
 
-  * **Condition:** Username has less than 5 characters or has more than 32.
-    **Code:** 400 Bad Request
+  * **Condition:** Username has less than 5 characters or has more than 32. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Name must be between 1 and 50 characters."}`
 
-  * **Condition:** Surname has less than 5 characters or has more than 32.
-    **Code:** 400 Bad Request
+  * **Condition:** Surname has less than 5 characters or has more than 32. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Surname must be between 1 and 50 characters."}`
 
-  * **Condition:** Role is not provided in the request.
-    **Code:** 400 Bad Request
+  * **Condition:** Role is not provided in the request. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role must be provided."}`
 
-  * **Condition:** Role is different from ADMIN or USER
-    **Code:** 400 Bad Request
+  * **Condition:** Role is different from ADMIN or USER <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Role can only be ADMIN or USER."}`
 
-  * **Condition:** Password is provided in the request.
-    **Code:** 400 Bad Request
+  * **Condition:** Password is provided in the request. <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Password needs to be reset from another API."}`
 
-  * **Condition:** Provided username can't be found in the DB.
-    **Code:** 404 Not Found
+  * **Condition:** Provided username can't be found in the DB. <br/>
+    **Code:** 404 Not Found <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username {username} doesn't exist in DB."}`
 
 * **Sample Call:**
@@ -165,13 +165,13 @@ All the operations related to User can only be called by an ADMIN User.
 
 * **Success Response:**
 
-  * **Code:** 200
+  * **Code:** 200 <br/>
     **Content:** `[{"username":"test-user","name":"John","surname":"Mayer","role":"USER"}, {"username":"test-user2","name":"Tony","surname":"Baier","role":"ADMIN"}]`
 
 * **Error Responses:**
 
-  * **Condition:** Provided username can't be found in the DB.
-    **Code:** 404 Not found
+  * **Condition:** Provided username can't be found in the DB. <br/>
+    **Code:** 404 Not found <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully deleted."}`
 
 * **Sample Call:**
