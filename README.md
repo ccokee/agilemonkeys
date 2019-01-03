@@ -119,13 +119,13 @@ All the operations related to User can only be called by an ADMIN User.
 
 * **Success Response:**
 
-  * **Code:** 200
+  * **Code:** 200 <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"User {username} successfully updated."}`
 
 * **Error Responses:**
 
-  * **Condition:** Username is not included in request or is empty or is a white space
-    **Code:** 400 Bad Request
+  * **Condition:** Username is not included in request or is empty or is a white space <br/>
+    **Code:** 400 Bad Request <br/>
     **Content:** `{"timestamp":"YYYY-MM-DDTHH:MM:SS.SSS+0000","message":"Username must contain at least one non-whitespace character."}`
 
   * **Condition:** Username has less than 5 characters or has more than 32.
