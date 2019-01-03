@@ -33,13 +33,17 @@ public class User implements Persistable<String>{
     String username;
 
     @Column(name = "password")
-    @Null(groups = {UserValidationGroup.Add.class, UserValidationGroup.Update.class}, message = "Password is auto-generated.")
+    @Null(groups = UserValidationGroup.Add.class, message = "Password is auto-generated.")
+    @Null(groups = UserValidationGroup.Update.class, message = "Password needs to be reset from another API.")
     String password;
 
     @Column(name = "name")
+    @Length(groups = {UserValidationGroup.Add.class, UserValidationGroup.Update.class}, min = 1, max = 50, message = "Name must be between 1 and 50 characters.")
+
     String name;
 
     @Column(name = "surname")
+    @Length(groups = {UserValidationGroup.Add.class, UserValidationGroup.Update.class}, min = 1, max = 50, message = "Surname must be between 1 and 50 characters.")
     String surname;
 
     @Column(name = "role")
