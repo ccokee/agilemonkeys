@@ -51,6 +51,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             customerRelationalRepository.save(customer);
             log.info("Customer {} relational's data has been persisted.", id);
         } catch (Exception e) {
+            // If upload of photo was successful but if Relational DB transaction failed we need to delete the uploaded Photo.
+            deleteExistingPhoto(customer);
             throw new CustomerRepositoryException(e);
         }
         return customer;
@@ -100,6 +102,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.getEmail(),
                         customer.getId());
             } catch (Exception e) {
+                // If upload of photo was successful but if Relational DB transaction failed we need to delete the uploaded Photo.
+                deleteExistingPhoto(customer);
                 throw new CustomerRepositoryException(e);
             }
         } else {
