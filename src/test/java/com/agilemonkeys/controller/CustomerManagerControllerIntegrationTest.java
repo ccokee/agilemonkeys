@@ -60,20 +60,20 @@ public class CustomerManagerControllerIntegrationTest {
         insertNewAdmin(username2);
 
         Customer customer = getCustomer();
-        MockMultipartFile costumer = getMultipartCustomer(customer);
-        MockMultipartFile photo = getMultipartPhoto();
+        MockMultipartFile multipartCustomer = getMultipartCustomer(customer);
+        MockMultipartFile multipartPhoto = getMultipartPhoto();
 
         // Add new Customer.
         MvcResult mvcResult = mockMvc.perform(multipart("/customer")
-                .file(costumer)
-                .file(photo).with(httpBasic(username, password)))
+                .file(multipartCustomer)
+                .file(multipartPhoto).with(httpBasic(username, password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
         // Add another new Customer.
         MvcResult mvcResult2 = mockMvc.perform(multipart("/customer")
-                .file(costumer)
-                .file(photo).with(httpBasic(username, password)))
+                .file(multipartCustomer)
+                .file(multipartPhoto).with(httpBasic(username, password)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -295,6 +295,31 @@ public class CustomerManagerControllerIntegrationTest {
             .with(httpBasic(username, password)))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Customer ID fake-id doesn't exist in DB.")));
+
+        deleteUser(username);
+    }
+
+    /**
+     * Test SQL Injection doesn't work
+     * HTTP 400 Bad request expected.
+     */
+    @Test
+    public void testSqlInjection() throws Exception {
+        insertNewUser(username);
+
+        Customer customer = getCustomer();
+        MockMultipartFile multipartCustomer = getMultipartCustomer(customer);
+
+        MvcResult mvcResult = mockMvc.perform(multipart("/customer")
+                .file(multipartCustomer).with(httpBasic(username, password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String id = mvcResult.getResponse().getContentAsString() + "; DROP TABLE Customer;";
+        MockMultipartFile updatedCustomer = getMultipartUpdatedCustomer(id);
+        mockMvc.perform(getUpdateBuilder()
+                .file(updatedCustomer).with(httpBasic(username, password)))
+                .andExpect(status().isNotFound());
 
         deleteUser(username);
     }
