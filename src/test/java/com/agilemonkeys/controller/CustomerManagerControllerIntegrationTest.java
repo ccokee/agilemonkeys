@@ -21,7 +21,10 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.io.File;
 import java.nio.file.Files;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -38,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CustomerManagerControllerIntegrationTest {
 
-    private static String username = "test-user";
+    private static String username = "test-user-1";
     private static String username2 = "test-user-2";
     private static String password = "welcome1";
 
@@ -101,7 +104,8 @@ public class CustomerManagerControllerIntegrationTest {
         MockMultipartFile updatedCustomer = getMultipartUpdatedCustomer(id);
         mockMvc.perform(getUpdateBuilder()
                 .file(updatedCustomer).with(httpBasic(username2, password)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("Customer "+ id + " successfully updated.")));
 
         // Get first user by its id and check everything was updated. Also We are login with another username o check
         // createdBy didn't change but lastModifiedBy did.
@@ -146,7 +150,7 @@ public class CustomerManagerControllerIntegrationTest {
         mockMvc.perform(multipart("/customer")
                 .file(getMultipartCustomer(customer)).with(httpBasic(username, password)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("id is auto-generated.")));
+                .andExpect(jsonPath("$.message", is("id will be auto-generated.")));
 
         deleteUser(username);
     }
@@ -273,7 +277,7 @@ public class CustomerManagerControllerIntegrationTest {
         mockMvc.perform(getUpdateBuilder()
                 .file(updatedCustomer).with(httpBasic(username, password)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Provided Customer ID fake-id doesn't exist in Repository.")));
+                .andExpect(jsonPath("$.message", is("Customer ID fake-id doesn't exist in DB.")));
 
         deleteUser(username);
     }
@@ -290,7 +294,7 @@ public class CustomerManagerControllerIntegrationTest {
             .contentType(APPLICATION_JSON)
             .with(httpBasic(username, password)))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message", is("Customer ID fake-id wasn't found.")));
+            .andExpect(jsonPath("$.message", is("Customer ID fake-id doesn't exist in DB.")));
 
         deleteUser(username);
     }

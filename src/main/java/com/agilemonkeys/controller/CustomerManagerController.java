@@ -1,6 +1,7 @@
 package com.agilemonkeys.controller;
 
 import com.agilemonkeys.controller.response.body.CustomerResponseBody;
+import com.agilemonkeys.controller.response.body.ResponseBody;
 import com.agilemonkeys.controller.validation.CustomerValidationGroup;
 import com.agilemonkeys.domain.Customer;
 import com.agilemonkeys.mapper.CustomerMapper;
@@ -14,8 +15,16 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -42,7 +51,7 @@ public class CustomerManagerController {
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-    public ResponseEntity<String> add(
+    public ResponseEntity add(
         @Validated({CustomerValidationGroup.Add.class}) @RequestPart("customer") Customer customer,
         @RequestPart(value = "photo", required = false) MultipartFile photo) {
 
@@ -122,7 +131,12 @@ public class CustomerManagerController {
         customer.setLastModifiedBy(user.getUsername());
 
         customerManagerService.update(customer);
-        return new ResponseEntity(HttpStatus.OK);
+
+        ResponseBody ok = ResponseBody.builder()
+                .timestamp(new Date())
+                .message("Customer " + customer.getId() + " successfully updated.")
+                .build();
+        return new ResponseEntity(ok, HttpStatus.OK);
     }
 
     /**
@@ -135,6 +149,11 @@ public class CustomerManagerController {
     public ResponseEntity deleteCustomer(@PathVariable("id") String id){
         log.info("Deleting Customer {}");
         this.customerManagerService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+
+        ResponseBody ok = ResponseBody.builder()
+                .timestamp(new Date())
+                .message("Customer " + id + " successfully deleted.")
+                .build();
+        return new ResponseEntity(ok, HttpStatus.OK);
     }
 }

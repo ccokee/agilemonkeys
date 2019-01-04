@@ -108,6 +108,7 @@ public class UserManagerController {
         log.info("Updating User {}", user.getUsername());
 
         userManagerService.update(user);
+
         ResponseBody ok = ResponseBody.builder()
                 .timestamp(new Date())
                 .message("User " + user.getUsername() + " successfully updated.")
@@ -126,6 +127,7 @@ public class UserManagerController {
         log.info("Deleting User {}", username);
 
         userManagerService.deleteByUsername(username);
+
         ResponseBody ok = ResponseBody.builder()
                 .timestamp(new Date())
                 .message("User " + username + " successfully deleted.")

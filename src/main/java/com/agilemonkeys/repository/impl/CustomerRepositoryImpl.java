@@ -103,7 +103,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new CustomerRepositoryException(e);
             }
         } else {
-            throw new CustomerNotFoundException("Provided Customer ID " + customer.getId() + " doesn't exist in Repository.");
+            throw new CustomerNotFoundException("Customer ID " + customer.getId() + " doesn't exist in DB.");
         }
     }
 
@@ -121,7 +121,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new CustomerRepositoryException(e);
             }
         } else {
-            throw new CustomerNotFoundException("Customer ID " + id + " wasn't found.");
+            throw new CustomerNotFoundException("Customer ID " + id + " doesn't exist in DB.");
         }
     }
 

@@ -29,16 +29,16 @@ import java.util.Optional;
 @Table(name = "customers")
 public class Customer {
     @Id
-    @Null(groups = CustomerValidationGroup.Add.class, message = "id is auto-generated.")
-    @NotNull(groups = CustomerValidationGroup.Update.class, message = "id can't be null when updating.")
+    @Null(groups = CustomerValidationGroup.Add.class, message = "id will be auto-generated.")
+    @NotNull(groups = CustomerValidationGroup.Update.class, message = "Valid id must be provided.")
     String id;
 
     @Column(name = "name")
-    @Length(min = 1, max = 50)
+    @Length(groups = {CustomerValidationGroup.Add.class, CustomerValidationGroup.Update.class}, min = 1, max = 50, message = "Name must be between 1 and 50 characters.")
     String name;
 
     @Column(name = "surname")
-    @Length(min = 1, max = 50)
+    @Length(groups = {CustomerValidationGroup.Add.class, CustomerValidationGroup.Update.class}, min = 1, max = 50, message = "Surname must be between 1 and 50 characters.")
     String surname;
 
     @Column(name = "created_by")
