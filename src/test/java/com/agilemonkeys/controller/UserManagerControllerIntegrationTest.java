@@ -72,7 +72,6 @@ public class UserManagerControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message",is("User airode2 successfully added.")));
 
-
         // Retrieve first added user by username. Assert values.
         mockMvc.perform(get("/user/airode")
                 .contentType(APPLICATION_JSON)
