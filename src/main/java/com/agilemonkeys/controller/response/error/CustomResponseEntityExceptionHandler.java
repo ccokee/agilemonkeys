@@ -1,10 +1,11 @@
 package com.agilemonkeys.controller.response.error;
 
 import com.agilemonkeys.controller.response.body.ResponseBody;
-import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.exception.PhotoFileException;
+import com.agilemonkeys.exception.CustomerNotFoundException;
 import com.agilemonkeys.exception.UserNotFoundException;
 import com.agilemonkeys.exception.UserAlreadyExistsException;
+import com.agilemonkeys.exception.RoleNotValidException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import java.util.Date;
 
 @ControllerAdvice
@@ -50,5 +52,11 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
         ResponseBody exceptionResponse = new ResponseBody(new Date(), ex.getMessage());
         return new ResponseEntity(exceptionResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = RoleNotValidException.class)
+    protected ResponseEntity<Object> handleRoleNotValidException(RoleNotValidException ex, WebRequest request) {
+        ResponseBody exceptionResponse = new ResponseBody(new Date(), ex.getMessage());
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }
