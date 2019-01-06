@@ -15,14 +15,13 @@ import static org.junit.Assert.assertNotNull;
  */
 public class GoogleCloudStorageIntegrationTest {
 
-    private static final String projectId = "agile-monkeys-test";
     private static final String bucketName = "crm-photos";
 
     private GoogleCloudStorage repository;
 
     @Before
     public void setUp() throws Exception {
-        repository = new GoogleCloudStorage(projectId, bucketName);
+        repository = new GoogleCloudStorage(bucketName);
     }
 
     @Test

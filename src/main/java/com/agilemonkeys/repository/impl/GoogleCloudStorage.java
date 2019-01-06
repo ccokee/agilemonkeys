@@ -26,11 +26,8 @@ public class GoogleCloudStorage implements FileStorageRepository {
     private Storage storage;
     private String bucketName;
 
-    public GoogleCloudStorage(String projectId, String bucketName) throws Exception{
-        GoogleCredentials credentials = GoogleCredentials.fromStream(
-                this.getClass().getClassLoader().getResourceAsStream("gcp-credentials.json"));
-        this.storage = StorageOptions.newBuilder().setCredentials(credentials)
-                .setProjectId(projectId).build().getService();
+    public GoogleCloudStorage(String bucketName) throws Exception{
+        this.storage = StorageOptions.newBuilder().build().getService();
         this.bucketName = bucketName;
     }
 

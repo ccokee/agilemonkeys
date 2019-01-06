@@ -21,7 +21,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public FileStorageRepository googleCloudStorage() throws Exception{
-        return new GoogleCloudStorage("agile-monkeys-test", "crm-photos");
+        return new GoogleCloudStorage( "crm-photos");
     }
 
     @Primary
