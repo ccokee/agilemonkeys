@@ -1,10 +1,19 @@
 # Test Agile Monkeys
 
 ## Build/Run
-This is a spring boot application with Graddle as automation system
+This is a spring boot application with Gradle as automation system
 
 * **Build and run** ```./gradlew build -x test && java -jar build/libs/agile-monkeys-test-1.0.jar```
-* **Build and run tests** ```./gradlew build```
+* **Run Tests** ```./gradlew build```
+* **Build Docker image** ```./gradlew clean docker dockerTag```
+
+To run the docker image locally:
+Once the docker image is created, verify a new image appears when `docker images`
+In order to run it,
+* Verify the docker image agile-monkeys-test shows up when `docker images`
+* Install gcloud https://cloud.google.com/sdk/install
+* Run `gcloud auth application-default login` to download the credentials locally
+* docker run -v ~/.config/gcloud:/root/.config/gcloud --publish 8080:8080 agile-monkeys-test:1.0
 
 The goal of this project is to manage customer data for a small Shop. It will work as the backend side for a CRM interface. There are 2 main entities, Customer and User.
 
