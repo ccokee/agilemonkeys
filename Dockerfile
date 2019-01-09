@@ -1,4 +1,6 @@
 FROM openjdk:8-jdk-alpine
-ADD agile-monkeys-test-1.0.jar agile-monkeys-test.jar
 EXPOSE 8080
-ENTRYPOINT exec java -jar /agile-monkeys-test.jar
+RUN mkdir -p /opt/app
+WORKDIR /opt/app
+COPY ./run_jar.sh ./build/libs/agile-monkeys-test-1.0.jar ./
+ENTRYPOINT exec java -jar agile-monkeys-test-1.0.jar
