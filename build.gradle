@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -30,4 +31,37 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+        }
+    }
+  repositories {
+    maven {
+      name = "OSSRH"
+      url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      credentials {
+        username = System.getenv("MAVEN_USERNAME")
+        password = System.getenv("MAVEN_PASSWORD")
+      }
+    }
+  }
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(
+        url: "${nexusUrl}/content/repositories/releases") {
+          authentication(userName: nexusUsername, password: nexusPassword)
+      }
+      snapshotRepository(
+        url: "${nexusUrl}/content/repositories/snapshots") {
+          authentication(userName: nexusUsername, password: nexusPassword)
+      }
+    }
+  }
 }
