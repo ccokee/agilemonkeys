@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: "1.0"
+description: The Agile Monkeys test helm chart
+name: agilemonkeys
+version: 1.0.0
+icon: https://assets.website-files.com/625fff2abe443df4ebc4e672/626002a1e6eb58119b978753_The%20Agile%20Monkeys%20Logo-01.svg
