@@ -1,0 +1,26 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tamingress
+  namespace: {{.Release.Namespace}}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.hosts }}
+  - host: {{ .name }}
+    http:
+      paths:
+      {{- if ( .tamenabled )  }}
+      {{- if (gt ($.Values.tam_image.replicaCount | int) 0) }}
+      - path: {{ default "/tam"  }}
+        backend:
+          serviceName: {{ $.Values.service_tam.name }}
+          servicePort: {{ $.Values.service_tam.port }}
+      {{- end }}
+      {{- end }}
+  {{- end }}
+{{- end }}
