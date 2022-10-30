@@ -1,0 +1,36 @@
+tam_image:
+  cpulimit: 2
+  cpurequested: 1
+  replicaCount: 2
+  memorylimit: "1024Mi"
+  memoryrequested: "256Mi"
+  ## tam pod affinity/anti-affinity
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - tam
+          topologyKey: "kubernetes.io/hostname"
+
+service_tam:
+  servicetype: ClusterIP
+
+prometheus:
+  servicetype: ClusterIP
+  grafanaservicetype: ClusterIP
+  grafana:
+## We prevent Kubernetes from assigning more than one Pod per Node to better tolerate node failures
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - grafana
+            topologyKey: "kubernetes.io/hostname"
