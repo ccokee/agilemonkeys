@@ -1,0 +1,129 @@
+{{/*
+Generate the full grafana image url
+*/}}
+{{- define "grafana.fullpath" -}}
+{{- if .Values.prometheus.grafana.image -}}
+  {{- if .Values.prometheus.grafana.image.registry -}}
+    {{- printf "%s" .Values.prometheus.grafana.image.registry -}}
+  {{- end -}}
+  {{- if .Values.prometheus.grafana.image.name -}}
+    {{- printf "%s" .Values.prometheus.grafana.image.name -}}
+  {{- end -}}
+  {{- if .Values.prometheus.grafana.image.tag -}}
+    {{- printf ":%s" .Values.prometheus.grafana.image.tag -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- if  and  (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana
+  namespace: {{ template "monitoring.namespace" . }}
+spec:
+  replicas: 1
+  serviceName: grafana-headless
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+        {{- range $key, $val := .Values.prometheus.podLabels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    spec:
+      affinity: {{- include "tam.templateValue" ( dict "value" .Values.prometheus.grafana.affinity "context" $ ) | nindent 8 }}
+      containers:
+        - image: "{{ include "grafana.fullpath" . }}"
+          imagePullPolicy: {{ include "resolve.imagePullPolicy" (dict "top" . "specificPullPolicy" .Values.prometheus.pullPolicy) }}
+          name: grafana
+          ports:
+            - containerPort: 3000
+              name: grafanaport
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: grafanaport
+            initialDelaySeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: grafanaport
+            initialDelaySeconds: 10
+            failureThreshold: 5 
+          resources:
+            requests:
+              memory: {{.Values.prometheus.grafana.memoryrequested}}
+              cpu: {{.Values.prometheus.grafana.cpurequested}}
+            limits:
+{{- if (.Values.prometheus.grafana.memorylimit ) }}                 
+              memory: {{ .Values.prometheus.grafana.memorylimit }}
+{{- end }}                  
+{{- if (.Values.prometheus.grafana.cpulimit ) }} 
+              cpu: {{ .Values.prometheus.grafana.cpulimit }} 
+{{- end }}             
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: data
+            - name: datasources
+              mountPath: /etc/grafana/provisioning/datasources/all.yaml
+              readOnly: true
+              subPath: all.yaml
+            - name: dashboards
+              mountPath: /etc/grafana/provisioning/dashboards/all.yaml
+              readOnly: true
+              subPath: all.yaml
+            - name: kubemetrics
+              mountPath: /var/lib/grafana/Kubernetes-tam-metrics.json
+              readOnly: true
+              subPath: Kubernetes-tam-metrics.json
+{{- if ( .Values.tam_image.metrics.enabled ) }}
+            - name: tam-metrics
+              mountPath: /var/lib/grafana/tam-metrics.json
+              readOnly: true
+              subPath: tam-metrics.json
+{{- end }}
+{{- if (.Values.prometheus.grafana.extraDashboardsConfigmaps) }}
+{{- range $configmaps := .Values.prometheus.grafana.extraDashboardsConfigmaps }}
+            - name: {{ $configmaps.name }}
+              mountPath: /var/lib/grafana/{{ $configmaps.dashboardFile }}
+              readOnly: true
+              subPath: {{ $configmaps.dashboardFile }}
+{{- end }}
+{{- end }}
+      restartPolicy: Always
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: datasources
+          configMap:
+            defaultMode: 0644
+            name: datasources
+        - name: dashboards
+          configMap:
+            defaultMode: 0644
+            name: dashboards
+        - name: kubemetrics
+          configMap:
+            defaultMode: 0644
+            name: kubemetrics
+{{- if ( .Values.tam_image.metrics.enabled ) }}
+        - name: tam-metrics
+          configMap:
+            defaultMode: 0644
+            name: tam-metrics
+{{- end }}
+{{- if .Values.prometheus.grafana.extraDashboardsConfigmaps }}
+{{- range $configmaps := .Values.prometheus.grafana.extraDashboardsConfigmaps }}
+        - name: {{ $configmaps.name }}
+          configMap:
+            defaultMode: 0644
+            name: {{ $configmaps.name }}
+{{- end }}
+{{- end }}
+{{- end }}

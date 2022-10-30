@@ -1,0 +1,11 @@
+{{- if  (eq (include "prometheus.enabled" .) "true")  }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tam-metrics
+  namespace: {{ template "monitoring.namespace" . }}
+data:
+  tam-metrics.json: |-
+    {
+    }
+{{- end }}
