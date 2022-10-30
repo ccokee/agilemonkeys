@@ -31,9 +31,12 @@ securityContext:
 
 tam_image:
   replicaCount: 1
-  podLabels: {}
+  podLabels:
+    appName: tam
     # key1: value1
-  serviceLabels: {}
+  serviceLabels:
+    version: 1.0
+    # key1: value
   app: tam
   name: tam
   servicename: tam
@@ -72,7 +75,9 @@ service_tam:
   servicetype: NodePort
   nodePort: 10443
   targetPort: 8080
-  labels: {}
+  labels:
+    appName: tam
+    version: 1.0
     # key1: value1
 
 prometheus:
@@ -89,7 +94,8 @@ prometheus:
       registry:
       name: prom/alertmanager
       tag: v0.24.0
-  podLabels: {}
+  podLabels:
+    appName: prometheus
     # key1: value1
   serviceLabels: {}
   pullPolicy: Always
@@ -151,3 +157,15 @@ ingress:
   hosts:
   - name:
     tamenabled: true
+
+service_ta,_prometheus:
+  labels: {}
+    #key1: value
+
+service_tam_ksm:
+  labels: {}
+    #key1: value
+
+service_grafana:
+  labels: {}
+    #key1: value

@@ -232,3 +232,38 @@ spec:
       {{- end }}
       {{- end }}         
 {{- end -}}
+
+{{/*
+Generate the services for the Prometheus example's pods, values are taken from values.yaml file.
+It will generate parameters for the pods depending of the parameters included in values.yaml.
+*/}}
+{{- define "agilemonkeys.tam.service.prometheus" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.install_assurance }}
+  name: {{ .Values.service_tam.name }}-prometheus
+  {{- if empty .Values.service_tam_prometheus.labels }}
+  labels: {{ include "tam.templateValue" ( dict "value" .Values.prometheus.serviceLabels "context" $) | nindent 4 }}
+  {{- else }}
+  labels: {{ include "tam.templateValue" ( dict "value" .Values.service_tam_prometheus.labels "context" $) | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  name: {{ .Values.service_tam.name }}-prometheus
+  {{- if empty .Values.service_tam_prometheus.labels }}
+  labels: {{ include "tam.templateValue" ( dict "value" .Values.prometheus.serviceLabels "context" $) | nindent 4 }}
+  {{- else }}
+  labels: {{ include "tam.templateValue" ( dict "value" .Values.service_tam_prometheus.labels "context" $) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  namespace: {{.Release.Namespace}}
+spec:
+  type: ClusterIP
+  ports:
+  - name: 9990tcp01
+    port: 9990
+    targetPort: 9990
+  selector:
+    app: {{ .Values.tam_image.app }}
+  sessionAffinity: ClientIP
+{{- end -}}
