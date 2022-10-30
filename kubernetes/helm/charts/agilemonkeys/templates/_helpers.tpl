@@ -1,6 +1,32 @@
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
+Expand the name of the chart.
+*/}}
+{{- define "tam.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "tam.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Generate the Service Account values for the SD-CL containers, values are taken from values.yaml file.
+It will generate the parameters for the pod depending on the parameters included in values.yaml.
+*/}}
+{{- define "tam.serviceAccount" -}}
+{{- if .Values.serviceAccount.name -}}
+{{- .Values.serviceAccount.name }}
+{{- else -}}
+{{- template "tam.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Generate the proper ImagePullPolicy. Always by default for security reasons.
 */}}
 {{- define "resolve.imagePullPolicy" -}}
@@ -54,13 +80,6 @@ Return a boolean that states if Prometheus example is enabled, it can be defined
   {{- end -}}
 {{- end -}}
 
-{{- end -}}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "tam-helm.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
