@@ -1,0 +1,85 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+You need to have a Kubernetes cluster running version 1.18.0 or later
+
+Kubernetes version installed is {{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor}}
+
+{{- if  lt (int .Capabilities.KubeVersion.Minor)  18 }}
+WARNING!!!  Your Kubernetes version is older than the minimum requirements
+{{- end }}
+
+
+Get the TAM application URLs by running these commands:
+
+{{- if (gt (.Values.tam_image.replicaCount | int) 0)  }}
+{{- if contains "NodePort" .Values.service_tam.servicetype }}
+
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.service_tam.name }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "TAM-BACKEND URL: http://$NODE_IP:$NODE_PORT/login"
+
+{{- else if contains "LoadBalancer" .Values.service_tam.servicetype  }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ .Values.service_tam.name }}'
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.service_tam.name }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   echo "TAM-BACKEND URL: http://$SERVICE_IP:{{ .Values.service_tam.port }}/login"
+
+{{- else if contains "ClusterIP"  .Values.service_tam.servicetype }}
+
+   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ .Values.service_tam.name }} {{ .Values.service_tam.port }}:{{ .Values.service_tam.port }} &
+   echo "TAM-BACKEND URL: http://127.0.0.1:{{ .Values.service_tam.port }}//login"
+
+{{- end }}
+{{- end }}
+
+{{- if  and (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled)  (.Values.prometheus.grafana.enabled)  }}
+{{- if contains "NodePort" .Values.prometheus.grafanaservicetype }}
+
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services grafana )
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Grafana URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.prometheus.grafanaservicetype  }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w grafana'
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} grafana --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   echo "Grafana URL: http://$SERVICE_IP:5601/"
+
+{{- else if contains "ClusterIP"  .Values.prometheus.grafanaservicetype }}
+   Access the Grafana UI running these commands:
+
+   kubectl port-forward --namespace {{ .Release.Namespace }} svc/grafana 3000:3000 &
+   echo "Grafana URL: http://127.0.0.1:3000/"
+
+{{- end }}
+{{- end }}
+
+{{- if  and (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled)  }}
+{{- if contains "NodePort" .Values.prometheus.servicetype }}
+ 
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.prometheus.servicename }} )
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Prometheus URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.prometheus.servicetype  }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ .Values.prometheus.servicename }} '
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.prometheus.servicename }}  --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   echo "Prometheus URL: http://$SERVICE_IP:5601/"
+
+{{- else if contains "ClusterIP"  .Values.prometheus.servicetype }}
+   Access the Prometheus UI running these commands:
+
+   kubectl port-forward --namespace {{ .Release.Namespace }} svc/prometheus-service  {{ .Values.prometheus.serviceport }}:{{ .Values.prometheus.serviceport }} &
+   echo "Prometheus URL: http://127.0.0.1:{{ .Values.prometheus.serviceport }}/"
+
+{{- end }}
+{{- end }}
