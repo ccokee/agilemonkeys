@@ -5,6 +5,7 @@
 global:
   prometheus:
     enabled: true
+# pullPolicy: Always
 
 monitoringNamespace: default
 
@@ -69,13 +70,14 @@ service_tam:
   port: 10443
   protocol: TCP
   servicetype: NodePort
+  nodePort: 10443
   targetPort: 8080
   labels: {}
     # key1: value1
 
 prometheus:
   ## Declare this to enable/disable local prometheus
-  # enabled: false
+  enabled: true
   image:
     registry:
     name: prom/prometheus

@@ -1,0 +1,5 @@
+{{- if (gt (.Values.tam_image.replicaCount | int) 0) }}
+# SD-UI Service
+---
+{{ include "agilemonkeys.tam.service" . }}
+{{- end }}
