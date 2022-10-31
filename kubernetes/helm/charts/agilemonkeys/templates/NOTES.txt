@@ -26,12 +26,12 @@ Get the TAM application URLs by running these commands:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ .Values.service_tam.name }}'
 
    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.service_tam.name }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-   echo "TAM-BACKEND URL: http://$SERVICE_IP:{{ .Values.service_tam.port }}/login"
+   echo "TAM-BACKEND URL: http://$SERVICE_IP:{{ .Values.service_tam.port }}/"
 
 {{- else if contains "ClusterIP"  .Values.service_tam.servicetype }}
 
    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ .Values.service_tam.name }} {{ .Values.service_tam.port }}:{{ .Values.service_tam.port }} &
-   echo "TAM-BACKEND URL: http://127.0.0.1:{{ .Values.service_tam.port }}//login"
+   echo "TAM-BACKEND URL: http://127.0.0.1:{{ .Values.service_tam.port }}/"
 
 {{- end }}
 {{- end }}
