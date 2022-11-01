@@ -219,18 +219,6 @@ spec:
         ports:
         - containerPort: {{ .Values.tam_image.ports.containerPort }}
           name: {{ .Values.tam_image.ports.name }}
-        livenessProbe:
-          tcpSocket:
-            port: 8080
-          failureThreshold: {{ .Values.tam_image.livenessProbe.failureThreshold }}
-          periodSeconds: {{ .Values.tam_image.livenessProbe.periodSeconds }}
-          initialDelaySeconds: {{ .Values.tam_image.livenessProbe.initialDelaySeconds }}
-        readinessProbe:
-          tcpSocket:
-            port: 8080
-          failureThreshold: {{ .Values.tam_image.readinessProbe.failureThreshold }}
-          periodSeconds: {{ .Values.tam_image.readinessProbe.periodSeconds }}
-          initialDelaySeconds: {{ .Values.tam_image.readinessProbe.initialDelaySeconds }}
         resources:
           requests:
             memory: {{ .Values.tam_image.memoryrequested }}

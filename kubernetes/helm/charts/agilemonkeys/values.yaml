@@ -76,7 +76,7 @@ service_tam:
   port: 10443
   protocol: TCP
   servicetype: NodePort
-  nodePort: 10443
+  nodePort: 30443
   targetPort: 8080
   labels:
     appName: tam
@@ -136,10 +136,10 @@ prometheus:
       registry:
       name: grafana/grafana
       tag: 8.5.6
-    memoryrequested: "100Mi"
-    cpurequested: "200m"
-    memorylimit: "100Mi"
-    cpulimit: "200Mi"
+    memoryrequested: "200Mi"
+    cpurequested: "500m"
+    memorylimit: "200Mi"
+    cpulimit: "500m"
     extraDashboardsConfigmaps: []
     # - name: example-dashboard-configmap
     #   dashboardFile: Example-dashboard.json
