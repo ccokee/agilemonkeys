@@ -1,4 +1,6 @@
-{{- if  (eq (include "prometheus.enabled" .) "true")  }}
+# Prometheus Cluster Role
+---
+{{- if  (.Values.prometheus.enabled)  }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,7 +24,7 @@ rules:
   verbs: ["get"]
 {{- end }}
 ---
-{{- if  (eq (include "prometheus.enabled" .) "true")  }}
+{{- if  (.Values.prometheus.enabled)  }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:

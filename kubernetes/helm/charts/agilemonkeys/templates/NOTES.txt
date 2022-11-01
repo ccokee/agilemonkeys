@@ -36,7 +36,7 @@ Get the TAM application URLs by running these commands:
 {{- end }}
 {{- end }}
 
-{{- if  and (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled)  (.Values.prometheus.grafana.enabled)  }}
+{{- if  and (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled)  (.Values.prometheus.grafana.enabled)  }}
 {{- if contains "NodePort" .Values.prometheus.grafanaservicetype }}
 
    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services grafana )
@@ -60,7 +60,7 @@ Get the TAM application URLs by running these commands:
 {{- end }}
 {{- end }}
 
-{{- if  and (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled)  }}
+{{- if  and (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled)  }}
 {{- if contains "NodePort" .Values.prometheus.servicetype }}
  
    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.prometheus.servicename }} )

@@ -1,4 +1,6 @@
-{{- if  and  (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
+# Grafana configmap
+---
+{{- if  and  (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -17,7 +19,7 @@ data:
       editable: true
 {{- end }}
 ---
-{{- if  and  (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
+{{- if  and  (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

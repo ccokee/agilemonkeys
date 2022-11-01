@@ -14,8 +14,9 @@ Generate the full ksm image url
   {{- end -}}
 {{- end -}}
 {{- end -}}
-
-{{- if  (eq (include "prometheus.enabled" .) "true")  }}
+# KSM deployment
+---
+{{- if  (.Values.prometheus.enabled)  }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

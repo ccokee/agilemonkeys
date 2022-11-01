@@ -15,7 +15,9 @@ Generate the full grafana image url
 {{- end -}}
 {{- end -}}
 
-{{- if  and  (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
+# Grafana STS
+---
+{{- if  and  (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

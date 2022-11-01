@@ -61,29 +61,6 @@ Return the proper monitoring namespace
 {{- end -}}
 
 {{/*
-Return a boolean that states if Prometheus example is enabled, it can be defined in several parameters, this is the priority order:
-1. global.prometheus.enabled
-2. prometheus.enabled
-3. false
-*/}}
-{{- define "prometheus.enabled" -}}
-{{- if .Values.prometheus.enabled -}}
-  {{- .Values.prometheus.enabled }}
-{{- end -}}
-
-{{- if .Values.global -}}
-  {{- if .Values.global.prometheus -}}
-    {{- if .Values.global.prometheus.enabled -}}
-      {{- .Values.global.prometheus.enabled -}}
-    {{- else -}}
-      {{- printf "false" -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-
-{{- end -}}
-
-{{/*
 Renders a value that contains template.
 {{ include "tam.templateValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
 */}}
@@ -194,10 +171,6 @@ spec:
     app: {{ .Values.tam_image.app }}
   sessionAffinity: ClientIP
 {{- end -}}
-
-
-
-
 
 {{/*
 Generate the Deployment file for the TAM pod, values are taken from values.yaml file.

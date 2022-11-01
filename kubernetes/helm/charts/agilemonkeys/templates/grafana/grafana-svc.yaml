@@ -1,4 +1,6 @@
-{{- if  and  (eq (include "prometheus.enabled" .) "true")  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
+# Grafana Service
+---
+{{- if  and  (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -23,8 +25,8 @@ spec:
     app: grafana
 {{- end }}
 
+# Grafana headless service
 ---
-
 {{- if  and  (.Values.prometheus.enabled)  (.Values.prometheus.server_enabled) (.Values.prometheus.grafana.enabled) }}
 apiVersion: v1
 kind: Service
