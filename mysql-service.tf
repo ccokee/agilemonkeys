@@ -1,18 +1,23 @@
-resource "kubernetes_service" "mysqlservice" {
+resource "kubernetes_manifest" "mysqlservice" {
  provider = kubernetes
  
-  metadata {
-    name = "mysql-service"
+ manifest = {
+  "apiVersion" = "v1"
+  "kind" = "Service"
+  "metadata" = {
+    "name" = "mysql-service"
   }
-  spec {
-    selector = {
-      App = kubernetes_deployment.mysql.spec.0.template.0.metadata[0].labels.App
+  "spec" = {
+    "ports" = [
+      {
+        "port" = 3306
+        "protocol" = "TCP"
+        "targetPort" = 3306
+      },
+    ]
+    "selector" = {
+      "app" = "mysql"
     }
-    port {
-      port        = 3306
-      target_port = 3306
-    }
-
-    type = "LoadBalancer"
   }
+}
 }
