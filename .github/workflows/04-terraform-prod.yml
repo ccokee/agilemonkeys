@@ -37,6 +37,9 @@ jobs:
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
+        env:
+          AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ID }}"
+          AWS_SECRET_ACCES_KEY: "${{ secrets.AWS_KEY }}"
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
@@ -61,13 +64,10 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-            
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
-        env:
-          AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ID }}"
-          AWS_SECRET_ACCES_KEY: "${{ secrets.AWS_KEY }}"
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
