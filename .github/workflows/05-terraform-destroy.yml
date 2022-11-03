@@ -50,8 +50,8 @@ jobs:
         run: terraform init
         working-directory: ${{ env.working-directory }}
         env:
-          TF_CLI_ARGS_init: "-backend-config=role_arn=arn:aws:iam::078766879797:role/admin -upgrade -reconfigure"
-          TF_VAR_assume_role: "arn:aws:iam::078766879797:role/admin"
+          TF_CLI_ARGS_init: "-backend-config=role_arn=arn:aws:iam::078766879797:user/coke -upgrade -reconfigure"
+          TF_VAR_assume_role: "arn:aws:iam::078766879797:user/coke"
 
       - name: Terraform validate
         id: validate
@@ -62,7 +62,7 @@ jobs:
         run: terraform plan -no-color
         working-directory: ${{ env.working-directory }}
         env:
-          TF_VAR_assume_role: "arn:aws:iam::078766879797:role/admin"
+          TF_VAR_assume_role: "arn:aws:iam::078766879797:user/coke"
 
       - name: Plan output
         id: output
@@ -98,7 +98,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
         working-directory: ${{ env.working-directory }}
         env:
-          TF_VAR_assume_role: "arn:aws:iam::078766879797:role/admin"
+          TF_VAR_assume_role: "arn:aws:iam::078766879797:user/coke"
 
       - name: Terraform apply
         id: apply
@@ -106,7 +106,7 @@ jobs:
         run: terraform apply/helm -auto-approve -input=false
         working-directory: ${{ env.working-directory }}
         env:
-          TF_VAR_assume_role: "arn:aws:iam::078766879797:role/admin"
+          TF_VAR_assume_role: "arn:aws:iam::078766879797:user/coke"
 
       - name: Install InSpec
         uses: actionshub/chef-install@main
@@ -118,6 +118,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::078766879797:role/admin
+          role-to-assume: arn:aws:iam::078766879797:user/coke
           role-duration-seconds: 600
           role-skip-session-tagging: true          

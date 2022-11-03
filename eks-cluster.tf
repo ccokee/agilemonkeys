@@ -1,57 +1,33 @@
-module "eks" {
+module "my-cluster" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.26.6"
+  version = "18.28.0"
 
-  cluster_name    = local.cluster_name
-  cluster_version = "1.22"
+  cluster_name    = var.cluster_name
+  cluster_version = var.cluster_version
+  subnet_ids      = [aws_subnet.dev1-subnet.id, aws_subnet.dev2-subnet.id]
+  vpc_id          = aws_vpc.dev-vpc.id
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
+    ami_type       = "AL2_x86_64"
+    instance_types = var.worker_group_instance_type
 
-    attach_cluster_primary_security_group = true
-
-    # Disabling and using externally provided security groups
-    create_security_group = false
+    attach_cluster_primary_security_group = false
+    vpc_security_group_ids                = [aws_security_group.allow-web-traffic.id]
   }
 
   eks_managed_node_groups = {
-    one = {
-      name = "node-group-1"
+    blue = {}
+    green = {
+      min_size     = var.autoscaling_group_min_size
+      max_size     = var.autoscaling_group_max_size
+      desired_size = var.autoscaling_group_desired_capacity
 
-      instance_types = ["t1.small"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-
-      pre_bootstrap_user_data = <<-EOT
-      echo 'foo bar'
-      EOT
-
-      vpc_security_group_ids = [
-        aws_security_group.node_group_one.id
-      ]
-    }
-
-    two = {
-      name = "node-group-2"
-
-      instance_types = ["t1.small"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-
-      pre_bootstrap_user_data = <<-EOT
-      echo 'foo bar'
-      EOT
-
-      vpc_security_group_ids = [
-        aws_security_group.node_group_two.id
-      ]
+      instance_types = var.worker_group_instance_type
+      capacity_type  = "SPOT"
+      labels = {
+        Environment = "dev"
+      }
     }
   }
 }
