@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
-    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-GH_TOKEN
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -20,8 +20,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "Jorge Leopoldo Curbera"
+          git config user.email "ccokee@gmail.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -34,4 +34,4 @@ jobs:
           charts_dir: /kubernetes/helm/charts
           charts_repo_url: github.com/ccokee/agilemonkeys-helm
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_TOKEN: "${{ secrets.GH_TOKEN }}"
