@@ -3,9 +3,9 @@
 # ------------------------------------------------------------
 aws_region = "us-east-1"
 vpc_cidr_block = "10.0.0.0/16"
-dev1_subnet_az = "us-east-1a"
+dev1_subnet_az = "eu-west-1"
 dev1_subnet_cidr_block = "10.0.1.0/24"
-dev2_subnet_az = "us-east-1b"
+dev2_subnet_az = "eu-west-1"
 dev2_subnet_cidr_block = "10.0.2.0/24"
 # ------------------------------------------------------------
 # EKS Cluster Settings
