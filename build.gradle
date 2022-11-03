@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -76,4 +77,22 @@ test {
     testLogging {
         showStandardStreams = true
     }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+        }
+    }
+  repositories {
+    maven {
+      name = "OSSRH"
+      url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      credentials {
+        username = System.getenv("MAVEN_USERNAME")
+        password = System.getenv("MAVEN_PASSWORD")
+      }
+    }
+  }
 }
