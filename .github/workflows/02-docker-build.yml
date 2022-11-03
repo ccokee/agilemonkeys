@@ -9,17 +9,17 @@ on:
   schedule:
     - cron: $cron-daily
   push:
-    branches: [ $default-branch ]
+    branches: [ master ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ master ]
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ccokee/tam
 
 
 jobs:
