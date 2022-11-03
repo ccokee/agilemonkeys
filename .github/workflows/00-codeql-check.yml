@@ -17,7 +17,7 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
-    
+
 jobs:
   analyze:
     name: Analyze
@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ $detected-codeql-languages ]
+        language: [ java ]
         # CodeQL supports [ $supported-codeql-languages ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
