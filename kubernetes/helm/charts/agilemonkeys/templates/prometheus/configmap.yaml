@@ -96,10 +96,6 @@ data:
           action: replace
           target_label: kubernetes_pod_name
 
-      - job_name: 'kube-state-metrics'
-        static_configs:
-        - targets: ['sd-kube-state-metrics:8080']
-
       - job_name: kubernetes-nodes-cadvisor
         scrape_interval: 10s
         scrape_timeout: 10s
@@ -134,12 +130,12 @@ data:
 
 {{- if (.Values.tam_image.metrics.enabled )  }}
       - job_name: 'tam'
-        metrics_path: /prometheus
+        metrics_path: /actuator/prometheus
         scheme: http
         tls_config:
           insecure_skip_verify: true
         static_configs:
-          - targets: ["{{ .Values.tam_image.name }}.{{ .Release.Namespace }}.svc.cluster.local:8080"]
+          - targets: ["{{ .Values.service_tam.name }}:{{ .Values.service_tam.port }}"]
 {{- end }}
 {{- if (.Values.prometheus.customJobs) }}
 {{- toYaml .Values.prometheus.customJobs | nindent 6 }}

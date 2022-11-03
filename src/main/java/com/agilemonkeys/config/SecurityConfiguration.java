@@ -26,7 +26,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             // All requests to any endpoint must be authorized or else they should be rejected
-            .authorizeRequests().anyRequest().authenticated()//.antMatchers("/*").hasRole("ADMIN")
+            .authorizeRequests()
+            .antMatchers("/actuator/**").permitAll()
             .and().httpBasic()
             .and().exceptionHandling();
     }
