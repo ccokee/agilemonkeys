@@ -1,4 +1,5 @@
 resource "kubernetes_deployment" "nginx" {
+  provider = kubernetes
   metadata {
     name = "mysql"
     labels = {
